@@ -10,4 +10,6 @@ public class Constants {
     }
 
     public static final String SOUND_FOLDER = "sounds";
+    public static final int ENTER_LEFT = 0;
+    public static final int ENTER_RIGHT = 1;
 }
