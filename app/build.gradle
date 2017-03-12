@@ -18,7 +18,9 @@ android {
         }
     }
     sourceSets {
-        main { assets.srcDirs = ['src/sound_main_bar/assets', 'src/sound_main_bar/assets/'] }
+        main {
+            assets.srcDirs = ['src/sound_main_bar/assets', 'src/sound_main_bar/assets/', 'src/main/assets', 'src/main/assets/']
+        }
     }
 }
 repositories {
@@ -31,13 +33,19 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    // Test dependencies
+    compile ('io.socket:socket.io-client:0.8.3') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:cardview-v7:25.1.1'
     compile 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
     compile 'com.github.kanytu:android-parallax-recyclerview:v1.7'
     compile 'com.android.support:support-v4:25.1.1'
     compile 'com.android.support:design:25.1.1'
-
-    // Test dependencies
-    testCompile 'junit:junit:4.12'
-}
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    testCompile 'junit:junit:4.12'}

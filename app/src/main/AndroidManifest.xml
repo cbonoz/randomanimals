@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.randomanimals.www.randomanimals">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- android:icon="@mipmap/ic_launcher" -->
     <application
         android:allowBackup="true"
@@ -28,7 +29,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".services.WebService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

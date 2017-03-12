@@ -18,6 +18,8 @@ public class ShareFragment extends Fragment {
         // Required empty public constructor
     }
 
+//    https://www.tutorialspoint.com/android/android_twitter_integration.htm
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

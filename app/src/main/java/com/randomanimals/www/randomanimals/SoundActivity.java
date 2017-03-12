@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 //https://github.com/kanytu/android-parallax-recyclerview/tree/master/example
@@ -32,25 +33,18 @@ public class SoundActivity extends AppCompatActivity {
     private boolean isNormalAdapter = false;
     private RecyclerView mRecyclerView;
 
+    private AssetManager aMan;
     private final MediaPlayer player = new MediaPlayer();
 
-    private AssetManager aMan;
     private String[] soundFiles;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound);
-        try {
-            aMan = getAssets();
-            soundFiles = aMan.list(Constants.SOUND_FOLDER);
-        } catch (IOException e) {
-            aMan = null;
-            Log.e(TAG, e.toString());
-            soundFiles =  new String[]{};
-        }
 
-        Log.d(TAG, "soundFiles: " + Arrays.toString(soundFiles));
+        aMan = getAssets();
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
         createAdapter(mRecyclerView);
     }

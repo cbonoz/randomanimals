@@ -1,6 +1,7 @@
 package com.randomanimals.www.randomanimals.fragments;
 
 
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
@@ -20,8 +21,12 @@ import android.widget.Toast;
 import com.randomanimals.www.randomanimals.Constants;
 import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
+import com.randomanimals.www.randomanimals.services.WebService;
+
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,30 +43,60 @@ public class PlaySoundFragment extends Fragment {
     Handler handler;
     TextView titleText;
 
-    String soundTitle;
-    String soundFile;
+    String animal;
+    String fileName;
 
     public PlaySoundFragment() {
         // Required empty public constructor
+    }
 
+    private String androidId;
+
+    private void incrementPlayCount() {
+        Intent incIntent = new Intent(getActivity(), WebService.class);
+        try {
+            JSONObject incJson = new JSONObject();
+            incJson.put("userid", androidId);
+            incJson.put("animal", animal);
+
+            incIntent.putExtra("url", Constants.PROFILE_URL);
+            incIntent.putExtra("body", incJson.toString());
+            ((MainActivity) getActivity()).startService(incIntent);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     private void playSoundFile() {
-        final String clickText = "Sound: " + soundFile;
-        Log.d(TAG, "Playing " + clickText);
+        final String clickText = "Sound: " + fileName;
         Toast.makeText(getActivity(), clickText, Toast.LENGTH_SHORT).show();
-        String joinedPath = new File(Constants.SOUND_FOLDER, soundFile).toString();
+        String mp3File = new File(Constants.SOUND_FOLDER, fileName).toString();
+        Log.d(TAG, "Playing " + animal + ": " + mp3File);
+
+        FileInputStream fis = null;
         try {
-            AssetFileDescriptor afd = aMan.openFd(joinedPath);
-            player.setDataSource(afd.getFileDescriptor());
+//            fis = new FileInputStream(mp3File);
+//            player.setDataSource(fis.getFD());
+            AssetFileDescriptor afd = aMan.openFd(mp3File);
+            player = new MediaPlayer();
+            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             player.prepare();
             player.start();
-            buttonPlayPause.setBackgroundResource(android.R.drawable.ic_media_pause);
-            stateMediaPlayer = stateMP_Playing;
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e("playSoundFile", e.toString());
             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
         }
+        finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (Exception ignore) {
+                }
+            }
+        }
+
+        buttonPlayPause
+                .setBackgroundResource(android.R.drawable.ic_media_play);
     }
 
 //    http://stackoverflow.com/questions/16141167/android-audio-seekbar
@@ -75,12 +110,15 @@ public class PlaySoundFragment extends Fragment {
 //        Image = (ImageView) view.findViewById(R.id.pdfview);
 //        Image.setImageResource(R.drawable.wereim);
 
+        final MainActivity context = ((MainActivity) getActivity());
+        androidId = context.getAndroidId();
+
         final Bundle bundle = getArguments();
-        soundTitle = bundle.getString("soundTitle");
-        soundFile = bundle.getString("soundFile");
+        animal = bundle.getString("animal");
+        fileName = bundle.getString("fileName");
 
         titleText = (TextView) view.findViewById(R.id.titleText);
-        titleText.setText(soundTitle);
+        titleText.setText(animal);
 
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarOnSeekChangeListener);
@@ -93,11 +131,10 @@ public class PlaySoundFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    ((MainActivity) getActivity()).launchFragment(
-                            SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
+                    context.launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
-                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -106,10 +143,9 @@ public class PlaySoundFragment extends Fragment {
         aMan = getActivity().getAssets();
         initMediaPlayer();
         playSoundFile();
+        incrementPlayCount();
         return view;
     }
-
-
 
     private int stateMediaPlayer;
     private final int stateMP_NotStarter = 0;
@@ -122,18 +158,6 @@ public class PlaySoundFragment extends Fragment {
     private void initMediaPlayer() {
         handler = new Handler();
         player = new MediaPlayer();
-//        player = MediaPlayer.create(were.this, R.raw.were);
-        stateMediaPlayer = stateMP_NotStarter;
-        mediaPos = player.getCurrentPosition();
-
-        mediaMax = player.getDuration();
-
-        seekBar.setMax(mediaMax); // Set the Maximum range of the
-        // seekBar.setProgress(mediaPos);// set
-        // current progress to song's
-
-        handler.removeCallbacks(moveSeekBarThread);
-        handler.postDelayed(moveSeekBarThread, 100);
     }
 
     private Runnable moveSeekBarThread = new Runnable() {
@@ -153,6 +177,12 @@ public class PlaySoundFragment extends Fragment {
         }
     };
 
+//    private void incrementPlayCount() {
+//        MainActivity context = ((MainActivity) getActivity());
+//        context.userInfo.incrementPlays(fileName);
+//        context.saveUserInfo();
+//    }
+
     Button.OnClickListener buttonPlayPauseOnClickListener = new Button.OnClickListener() {
 
         @Override
@@ -160,19 +190,22 @@ public class PlaySoundFragment extends Fragment {
             // TODO Auto-generated method stub
             switch (stateMediaPlayer) {
                 case stateMP_NotStarter:
-                    playSoundFile();
-//                    player.start();
-//                    buttonPlayPause.setBackgroundResource(android.R.drawable.ic_media_pause);
-//                    stateMediaPlayer = stateMP_Playing;
+                    player.start();
+                    buttonPlayPause
+                            .setBackgroundResource(android.R.drawable.ic_media_pause);
+                    stateMediaPlayer = stateMP_Playing;
+                    incrementPlayCount();
                     break;
                 case stateMP_Playing:
                     player.pause();
-                    buttonPlayPause.setBackgroundResource(android.R.drawable.ic_media_play);
+                    buttonPlayPause
+                            .setBackgroundResource(android.R.drawable.ic_media_play);
                     stateMediaPlayer = stateMP_Pausing;
                     break;
                 case stateMP_Pausing:
                     player.start();
-                    buttonPlayPause.setBackgroundResource(android.R.drawable.ic_media_pause);
+                    buttonPlayPause
+                            .setBackgroundResource(android.R.drawable.ic_media_pause);
                     stateMediaPlayer = stateMP_Playing;
                     break;
             }
@@ -197,6 +230,8 @@ public class PlaySoundFragment extends Fragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
+            // TODO Auto-generated method stub
+
             if (fromUser) {
                 player.seekTo(progress);
                 seekBar.setProgress(progress);

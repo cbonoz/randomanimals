@@ -6,10 +6,15 @@
             android:id="@+id/nav_sounds"
             android:icon="@drawable/ic_menu_send"
             android:title="Sounds" />
+
         <item
-            android:id="@+id/nav_quiz"
+            android:id="@+id/nav_leader"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Quiz" />
+            android:title="Leaderboard" />
+        <!--<item-->
+            <!--android:id="@+id/nav_quiz"-->
+            <!--android:icon="@drawable/ic_menu_gallery"-->
+            <!--android:title="Quiz" />-->
         <!--<item-->
             <!--android:id="@+id/nav_slideshow"-->
             <!--android:icon="@drawable/ic_menu_slideshow"-->
@@ -20,7 +25,7 @@
     <item android:title="World">
         <menu>
             <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/nav_profile"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Profile" />
             <item
