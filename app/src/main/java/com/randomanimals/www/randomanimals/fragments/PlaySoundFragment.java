@@ -4,47 +4,58 @@ package com.randomanimals.www.randomanimals.fragments;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
 import com.randomanimals.www.randomanimals.Constants;
 import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
+import com.randomanimals.www.randomanimals.services.TimerUtil;
 import com.randomanimals.www.randomanimals.services.WebService;
 
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * A simple {@link Fragment} subclass.
+ * http://www.androidhive.info/2012/03/android-building-audio-player-tutorial/
  */
-public class PlaySoundFragment extends Fragment {
+public class PlaySoundFragment extends Fragment implements
+        SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "PlaySoundFragment";
 
     private AssetManager aMan;
-    MediaPlayer player;
-    Button buttonPlayPause;
+    private static MediaPlayer player = null;
+    ImageButton playPauseButton;
+    private TextView songCurrentDurationLabel;
+    private TextView songTotalDurationLabel;
+
     Button backButton;
-    ImageView Image;
     SeekBar seekBar;
     Handler handler;
     TextView titleText;
 
     String animal;
     String fileName;
+
+    private static final TimerUtil utils = new TimerUtil();
 
     public PlaySoundFragment() {
         // Required empty public constructor
@@ -58,8 +69,10 @@ public class PlaySoundFragment extends Fragment {
             JSONObject incJson = new JSONObject();
             incJson.put("userid", androidId);
             incJson.put("animal", animal);
+            MainActivity context = (MainActivity) getActivity();
+            incJson.put("username", context.username);
 
-            incIntent.putExtra("url", Constants.PROFILE_URL);
+            incIntent.putExtra("url", Constants.INCREMENT_URL);
             incIntent.putExtra("body", incJson.toString());
             ((MainActivity) getActivity()).startService(incIntent);
         } catch (Exception e) {
@@ -67,40 +80,89 @@ public class PlaySoundFragment extends Fragment {
         }
     }
 
+    private SuperActivityToast.OnButtonClickListener onButtonClickListener = new SuperActivityToast.OnButtonClickListener() {
+        @Override
+        public void onClick(View view, Parcelable token) {
+            try {
+                handler.removeCallbacks(mUpdateTimeTask);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+            MainActivity context = (MainActivity) getActivity();
+            try {
+                context.launchFragment(ProfileFragment.class.newInstance(), Constants.ENTER_LEFT);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                if (context != null) {
+                    Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
+    private void makeSuperToastOnIncrement(String text) {
+        SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
+                .setButtonText("Profile")
+                .setButtonIconResource(R.drawable.ic_menu_manage)
+                .setOnButtonClickListener("your_profile", null, onButtonClickListener)
+                .setProgressBarColor(Color.WHITE)
+                .setText(text)
+                .setDuration(Style.DURATION_SHORT)
+                .setFrame(Style.FRAME_LOLLIPOP)
+                .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_PURPLE))
+                .setAnimations(Style.ANIMATIONS_POP).show();
+    }
+
+    private int totalDuration = 0;
+
+    private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            mp.start();
+            // Set the duration of the file.
+            totalDuration = mp.getDuration();
+            // set Progress bar values
+            seekBar.setProgress(0);
+            seekBar.setMax(100);
+            updateProgressBar();
+        }
+    };
+
+    private final android.media.MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            Log.d(TAG, "onCompletion");
+            incrementPlayCount(); // Increment count for animal.
+            // TODO: Move toast to incrementPlayCount callback.
+            makeSuperToastOnIncrement("+1 " + animal);
+            // Changing button image to play button
+            playPauseButton.setImageResource(R.drawable.audio_play);
+        }
+    };
+
     private void playSoundFile() {
-        final String clickText = "Sound: " + fileName;
-        Toast.makeText(getActivity(), clickText, Toast.LENGTH_SHORT).show();
         String mp3File = new File(Constants.SOUND_FOLDER, fileName).toString();
         Log.d(TAG, "Playing " + animal + ": " + mp3File);
-
-        FileInputStream fis = null;
+        if (player != null) {
+            stopAndReleasePlayer();
+        }
+        player = new MediaPlayer();
         try {
-//            fis = new FileInputStream(mp3File);
-//            player.setDataSource(fis.getFD());
             AssetFileDescriptor afd = aMan.openFd(mp3File);
-            player = new MediaPlayer();
             player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            player.prepare();
-            player.start();
+            player.setOnCompletionListener(onCompletionListener);
+            player.setOnPreparedListener(onPreparedListener);
+            player.prepareAsync();
         } catch (Exception e) {
             Log.e("playSoundFile", e.toString());
             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
         }
-        finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (Exception ignore) {
-                }
-            }
-        }
 
-        buttonPlayPause
-                .setBackgroundResource(android.R.drawable.ic_media_play);
+        // Changing Button Image to pause image
+        playPauseButton.setImageResource(R.drawable.audio_pause);
     }
 
 //    http://stackoverflow.com/questions/16141167/android-audio-seekbar
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,123 +183,167 @@ public class PlaySoundFragment extends Fragment {
         titleText.setText(animal);
 
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
-        seekBar.setOnSeekBarChangeListener(seekBarOnSeekChangeListener);
+        seekBar.setOnSeekBarChangeListener(this);
 
-        buttonPlayPause = (Button) view.findViewById(R.id.playPauseButton);
-        buttonPlayPause.setOnClickListener(buttonPlayPauseOnClickListener);
+        songCurrentDurationLabel = (TextView) view.findViewById(R.id.songCurrentDurationLabel);
+        songTotalDurationLabel = (TextView) view.findViewById(R.id.songTotalDurationLabel);
+
+        playPauseButton = (ImageButton) view.findViewById(R.id.playPauseButton);
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+            if (player != null) {
+                // Set the player button icon (play or pause depending on the current player status.
+                if (player.isPlaying()) {
+                    player.pause();
+                    // Changing button image to play button
+                    playPauseButton.setImageResource(R.drawable.audio_play);
+                } else {
+                    // Resume song
+                    player.start();
+                    // Changing button image to pause button
+                    playPauseButton.setImageResource(R.drawable.audio_pause);
+                }
+            }
+
+            }
+        });
 
         backButton = (Button)  view.findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    context.launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                    Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-                }
+            try {
+                context.launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+            try {
+                handler.removeCallbacks(mUpdateTimeTask);
+                stopAndReleasePlayer();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
             }
         });
 
-
         aMan = getActivity().getAssets();
-        initMediaPlayer();
+        handler = new Handler();
         playSoundFile();
-        incrementPlayCount();
         return view;
     }
 
-    private int stateMediaPlayer;
-    private final int stateMP_NotStarter = 0;
-    private final int stateMP_Playing = 1;
-    private final int stateMP_Pausing = 2;
-    private int mediaPos;
-    private int mediaMax;
-
-
-    private void initMediaPlayer() {
-        handler = new Handler();
-        player = new MediaPlayer();
+    /**
+     * Update timer on sound seekbar each 100ms.
+     * */
+    public void updateProgressBar() {
+        handler.postDelayed(mUpdateTimeTask, 100);
     }
 
-    private Runnable moveSeekBarThread = new Runnable() {
-
+    /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            if (player.isPlaying()) {
+            // long totalDuration = player.getDuration();
+            try {
+                long currentDuration = player.getCurrentPosition();
+                // Displaying Total Duration time
+                songTotalDurationLabel.setText(utils.milliSecondsToTimer(totalDuration));
+                // Displaying time completed playing
+                songCurrentDurationLabel.setText(utils.milliSecondsToTimer(currentDuration));
 
-                int mediaPos_new = player.getCurrentPosition();
-                int mediaMax_new = player.getDuration();
-                seekBar.setMax(mediaMax_new);
-                seekBar.setProgress(mediaPos_new);
-
-                handler.postDelayed(this, 100); // Looping the thread after 0.1
-                // second
-                // seconds
-            }
-        }
-    };
-
-//    private void incrementPlayCount() {
-//        MainActivity context = ((MainActivity) getActivity());
-//        context.userInfo.incrementPlays(fileName);
-//        context.saveUserInfo();
-//    }
-
-    Button.OnClickListener buttonPlayPauseOnClickListener = new Button.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            switch (stateMediaPlayer) {
-                case stateMP_NotStarter:
-                    player.start();
-                    buttonPlayPause
-                            .setBackgroundResource(android.R.drawable.ic_media_pause);
-                    stateMediaPlayer = stateMP_Playing;
-                    incrementPlayCount();
-                    break;
-                case stateMP_Playing:
-                    player.pause();
-                    buttonPlayPause
-                            .setBackgroundResource(android.R.drawable.ic_media_play);
-                    stateMediaPlayer = stateMP_Pausing;
-                    break;
-                case stateMP_Pausing:
-                    player.start();
-                    buttonPlayPause
-                            .setBackgroundResource(android.R.drawable.ic_media_pause);
-                    stateMediaPlayer = stateMP_Playing;
-                    break;
-            }
-
-        }
-    };
-
-    SeekBar.OnSeekBarChangeListener seekBarOnSeekChangeListener = new SeekBar.OnSeekBarChangeListener() {
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress,
-                                      boolean fromUser) {
-            // TODO Auto-generated method stub
-
-            if (fromUser) {
-                player.seekTo(progress);
+                // Updating progress bar
+                int progress = utils.getProgressPercentage(currentDuration, totalDuration);
+                //Log.d("Progress", ""+progress);
                 seekBar.setProgress(progress);
-            }
 
+                // Running this thread after 100 milliseconds
+                handler.postDelayed(this, 100);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                stopAndReleasePlayer();
+            }
         }
     };
+
+    /**
+     *
+     * */
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+
+    }
+
+    /**
+     * When user starts moving the progress handler
+     * */
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // remove message Handler from updating progress bar
+        handler.removeCallbacks(mUpdateTimeTask);
+    }
+
+    /**
+     * When user stops moving the progress hanlder
+     * */
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        handler.removeCallbacks(mUpdateTimeTask);
+        if (player!=null) {
+            // int totalDuration = player.getDuration();
+            int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+            // forward or backward to certain seconds
+            player.seekTo(currentPosition);
+
+            // update timer progress again
+            updateProgressBar();
+        }
+    }
+
+    private void stopAndReleasePlayer() {
+        if (player != null) {
+            try {
+                if (player.isPlaying()) {
+                    player.stop();
+                }
+                player.release();
+                player = null;
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        stopAndReleasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+        stopAndReleasePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        playSoundFile();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+        stopAndReleasePlayer();
+    }
 
 }

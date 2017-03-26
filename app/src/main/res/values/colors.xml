@@ -7,6 +7,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#fff</color>
     <color name="tan">#e4d5c7</color>
+    <color name="listRed">#ec0606</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

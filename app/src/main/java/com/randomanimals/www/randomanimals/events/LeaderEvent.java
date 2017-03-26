@@ -24,4 +24,8 @@ public class LeaderEvent {
     public LeaderEvent(List<Animal> animals) {
         this.animals = animals;
     }
+
+    public LeaderEvent() {
+        animals = null;
+    }
 }

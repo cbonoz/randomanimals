@@ -11,7 +11,7 @@ public class Animal {
     public String userid;
     public String username;
     public String animal;
-    public int count;
+    public int count = 0;
     public Date created;
 
     public Animal(String userid, String username, String animal, int count, Date created) {
@@ -22,4 +22,11 @@ public class Animal {
         this.created = created;
     }
 
+//    public String printUserCount() {
+//        return username + ": " + count + " times";
+//    }
+//
+//    public String printAnimalCount() {
+//        return animal + ": " + count + " times";
+//    }
 }

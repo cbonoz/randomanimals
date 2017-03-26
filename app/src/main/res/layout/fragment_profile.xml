@@ -1,31 +1,82 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_height="fill_parent"
     tools:context="com.randomanimals.www.randomanimals.fragments.ProfileFragment">
+    <!--android:weightSum="1">-->
 
     <TextView
-    android:id="@+id/profileText"
-    android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:text="How much of an Animal Sound Freak are you" />
+        android:id="@+id/profileText"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="@string/profile_desc_text" />
 
-    <TextView
-        android:id="@+id/userPlaysText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:text="TextView"
-        android:layout_below="@+id/profileText"
-        android:layout_centerHorizontal="true" />
+    <!--<ScrollView-->
+        <!--android:id="@+id/SCROLLER_ID"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="25dp"-->
+        <!--android:scrollbars="vertical"-->
+        <!--android:layout_below="@+id/profileText"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:fillViewport="true">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/userPlaysText"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="25dp"-->
+            <!--android:text="TextView"/>-->
+
+    <!--</ScrollView>-->
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/darker_gray"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+
+        <!-- A RecyclerView with some commonly used attributes -->
+
+        <TextView
+            android:id="@+id/userPlaysText"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginTop="25dp"
+            android:text="TextView"
+            android:visibility="gone" />
+
+        <!--style="@style/SpinKitView.Large.Circle"-->
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spinKit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorAccent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/profile_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/userNameText"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/profileText"
-        android:layout_alignParentStart="true"
-        android:text="" />
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:text="Leaderboard Username: .." />
 
     <Button
         android:id="@+id/changeUserButton"
@@ -33,5 +84,4 @@
         android:layout_height="45dp"
         android:text="@string/dialog_username" />
 
-
-</RelativeLayout>
+</LinearLayout>

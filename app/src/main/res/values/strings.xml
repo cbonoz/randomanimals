@@ -4,7 +4,7 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Random Animals</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -14,9 +14,23 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="loading">Loading...</string>
+    <string name="current_leaders">Current Leaders</string>
+    <string name="no_leaders">No Leaders</string>
+    <string name="no_plays">No play history yet</string>
+
+    <string name="share_twitter">Clicking image will open Twitter in a browser window</string>
+    <string name="twitter_line">Random Animals App - How much of an animal expert are you?</string>
 
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="username">Username</string>
     <string name="dialog_username">Change Username</string>
+    <!--<string name="dialog_username_hint">Whatever you want</string>-->
+    <string name="username_text">Leaderboard Username: <b>%1$s</b></string>
+    <!--How much of an animal sounds freak are you?\n\t-->
+    <string name="profile_desc_text"><b>Here are your listening counts for this device. These counts appear on the animal leaderboards:</b></string>
+
+    <!--Error text-->
+    <string name="internet_error">Could not connect to Internet service</string>
+    <string name="connection_error">Connection Error</string>
 </resources>

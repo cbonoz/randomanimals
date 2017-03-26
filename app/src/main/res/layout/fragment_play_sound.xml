@@ -13,15 +13,46 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/playPauseButton"
-        android:layout_width="wrap_content"
+
+    <!-- Timer Display -->
+    <LinearLayout
+        android:id="@+id/timerDisplay"
+        android:layout_above="@id/seekBar"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp">
+        <!-- Current Duration Label -->
+        <TextView
+            android:id="@+id/songCurrentDurationLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="#eeeeee"
+            android:textStyle="bold"/>
+        <!-- Total Duration Label -->
+        <TextView
+            android:id="@+id/songTotalDurationLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="#04cbde"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/playPauseButton"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:background="@android:color/transparent"
         android:layout_alignTop="@+id/seekBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="51dp"
         android:elevation="14dp"
-        android:visibility="invisible" />
+         />
 
     <TextView
         android:id="@+id/titleText"

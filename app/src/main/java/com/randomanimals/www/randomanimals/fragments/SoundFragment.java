@@ -51,7 +51,7 @@ public class SoundFragment extends Fragment {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, final ParallaxRecyclerAdapter<SoundFile> adapter, int i) {
-                return new SoundFragment.ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.row_recyclerview, viewGroup, false));
+                return new SoundFragment.ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.sound_list_item, viewGroup, false));
             }
 
             @Override

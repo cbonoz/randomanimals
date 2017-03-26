@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.randomanimals.www.randomanimals.fragments.LeaderFragment;
 import com.randomanimals.www.randomanimals.fragments.PlaySoundFragment;
 import com.randomanimals.www.randomanimals.fragments.ProfileFragment;
@@ -27,7 +26,7 @@ import com.randomanimals.www.randomanimals.fragments.QuizFragment;
 import com.randomanimals.www.randomanimals.fragments.ShareFragment;
 import com.randomanimals.www.randomanimals.fragments.SoundFragment;
 import com.randomanimals.www.randomanimals.models.SoundFile;
-import com.randomanimals.www.randomanimals.models.UserInfo;
+import com.randomanimals.www.randomanimals.services.ValidatorUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     public String getAndroidId() {
         return androidId;
     }
+
+    public String username;
 
     public ArrayList<SoundFile> getSoundFiles() {
         return soundFiles;
@@ -81,17 +82,26 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "Soundfiles: " + soundFiles.toString());
     }
 
+    private String generateUserName() {
+        return "guest" + Math.round(Math.random()*Integer.MAX_VALUE/100);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(R.string.app_name);
 
         // Setup.
         androidId = Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+        username = getStringPref(Constants.USERNAME_KEY);
+        if (!ValidatorUtil.validateUsername(username)) {
+            saveStringPref(Constants.USERNAME_KEY, generateUserName());
+        }
         initSoundFiles();
-        loadUserInfo();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -106,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(this, e.toString() + " - try again later", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -211,7 +221,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_leader:
                 fragmentClass = LeaderFragment.class;
-                title = "Animal Sounds Leaderboard";
+                title = "Animal Sounds Leaderboards";
                 break;
             case R.id.nav_quiz:
                 fragmentClass = QuizFragment.class;
@@ -244,25 +254,31 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private String generateUserName() {
-        return "guest" + Math.round(Math.random()*Integer.MAX_VALUE/100);
+//    if (!ValidatorUtil.validateUsername(value)) {
+//        value = generateUserName();
+//        SharedPreferences.Editor prefsEditor = prefs.edit();
+//        prefsEditor.putString(key, value);
+//        prefsEditor.apply();
+//    }
+
+    public String getStringPref(String key) {
+        SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+        return prefs.getString(key, "");
     }
+
+    public void saveStringPref(String key, String value) {
+        SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(key, value);
+        prefsEditor.apply();
+        Log.d(TAG, "Set " + key + ": " + value);
+    }
+
+
 
 //    public UserInfo userInfo;
 //    private static final Gson gson = new Gson();
-    public void loadUserInfo() {
-        SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
-        String username = prefs.getString("username", "");
 
-        if (username.length() < Constants.MIN_USERNAME_LENGTH) {
-            username = generateUserName();
-            SharedPreferences.Editor prefsEditor = prefs.edit();
-            prefsEditor.putString("username", username);
-            prefsEditor.apply();
-        }
-
-        UserInfo.username = username;
-    }
 
 
 }

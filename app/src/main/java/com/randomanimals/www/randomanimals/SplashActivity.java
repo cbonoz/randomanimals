@@ -1,6 +1,7 @@
 package com.randomanimals.www.randomanimals;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.viksaa.sssplash.lib.activity.AwesomeSplash;
@@ -12,42 +13,51 @@ import com.viksaa.sssplash.lib.model.ConfigSplash;
  * status bar and navigation/system bar) with user interaction.
  */
 public class SplashActivity extends AwesomeSplash  {
+    private static final String TAG = "SplashActivity";
 
-        //DO NOT OVERRIDE onCreate()!
-        //if you need to start some services do it in initSplash()!
-        @Override
-        public void initSplash(ConfigSplash configSplash) {
+    //DO NOT OVERRIDE onCreate()!
+    //if you need to start some services do it in initSplash()!
+    @Override
+    public void initSplash(ConfigSplash configSplash) {
+        /* you don't have to override every property */
 
-            /* you don't have to override every property */
-
-            //Customize Circular Reveal
-            configSplash.setBackgroundColor(R.color.white); //any color you want form colors.xml
-            configSplash.setAnimCircularRevealDuration(2000); //int ms
-            configSplash.setRevealFlagX(Flags.REVEAL_LEFT);  //or Flags.REVEAL_RIGHT
-            configSplash.setRevealFlagY(Flags.REVEAL_TOP); //or Flags.REVEAL_BOTTOM
-
-            //Choose LOGO OR PATH; if you don't provide String value for path it's logo by default
-
-            //Customize Logo
-            configSplash.setLogoSplash(R.drawable.random_animals_108); //or any other drawable
-            configSplash.setAnimLogoSplashDuration(2000); //int ms
-            configSplash.setAnimLogoSplashTechnique(Techniques.Bounce); //choose one form Techniques (ref: https://github.com/daimajia/AndroidViewAnimations)
-
-            //Customize Title
-            configSplash.setTitleSplash(getString(R.string.app_name));
-            configSplash.setTitleTextColor(R.color.colorPrimaryDark);
-            configSplash.setTitleTextSize(30f); //float value
-            configSplash.setAnimTitleDuration(3000);
-            configSplash.setAnimTitleTechnique(Techniques.FlipInX);
-            // configSplash.setTitleFont("fonts/myfont.ttf"); //provide string to your font located in assets/fonts/
-
+        final int duration;
+        if (BuildConfig.DEBUG) {
+            duration = 500;
+        } else {
+            // Production duration for into splash screen animations.
+            duration = 2000;
         }
+        Log.d(TAG, "Splash duration: " + duration);
 
-        @Override
-        public void animationsFinished() {
-            // Transit to another activity here or perform other actions.
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        //Customize Circular Reveal
+        configSplash.setBackgroundColor(R.color.white); //any color you want form colors.xml
+        configSplash.setAnimCircularRevealDuration(duration); //int ms
+        configSplash.setRevealFlagX(Flags.REVEAL_LEFT);  //or Flags.REVEAL_RIGHT
+        configSplash.setRevealFlagY(Flags.REVEAL_TOP); //or Flags.REVEAL_BOTTOM
+
+        //Choose LOGO OR PATH; if you don't provide String value for path it's logo by default
+
+        //Customize Logo
+        configSplash.setLogoSplash(R.drawable.random_animals_108); //or any other drawable
+        configSplash.setAnimLogoSplashDuration(duration); //int ms
+        configSplash.setAnimLogoSplashTechnique(Techniques.Bounce); //choose one form Techniques (ref: https://github.com/daimajia/AndroidViewAnimations)
+
+        //Customize Title
+        configSplash.setTitleSplash(getString(R.string.app_name));
+        configSplash.setTitleTextColor(R.color.colorPrimaryDark);
+        configSplash.setTitleTextSize(30f); //float value
+        configSplash.setAnimTitleDuration(duration);
+        configSplash.setAnimTitleTechnique(Techniques.FlipInX);
+        // configSplash.setTitleFont("fonts/myfont.ttf"); //provide string to your font located in assets/fonts/
+
+    }
+
+    @Override
+    public void animationsFinished() {
+        // Transit to another activity here or perform other actions.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }

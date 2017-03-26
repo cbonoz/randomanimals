@@ -1,25 +1,92 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="com.randomanimals.www.randomanimals.fragments.LeaderFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:id="@+id/leaderText"
+    <!--<TextView-->
+        <!--android:id="@+id/leaderText"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:text="Leaderboard"-->
+        <!--android:layout_alignParentLeft="true" />-->
+
+
+    <Spinner
+        android:id="@+id/animalSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/dividerLine"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Leaderboard"
-        android:layout_alignParentLeft="true" />
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"/>
+
 
     <TextView
-        android:id="@+id/leaderBoardText"
+        android:id="@+id/leaderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/leaderText"
-        android:layout_centerHorizontal="true"
-        android:text="Loading..." />
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"
+        android:text="Current Leaders" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+
+        <!-- A RecyclerView with some commonly used attributes -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/leader_recycler_view"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/leaderBoardText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading..." />
+
+        <!--style="@style/SpinKitView.Large.Circle"-->
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spinKit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorAccent" />
+
+    </FrameLayout>
+
+    <!--<ScrollView-->
+        <!--android:id="@+id/SCROLLER_ID"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:scrollbars="vertical"-->
+        <!--android:padding="25dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_below="@id/leaderText"-->
+        <!--android:fillViewport="true">-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/leaderBoardText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Loading..." />-->
+
+    <!--</ScrollView>-->
+
+
 
     <!--<ExpandableListView-->
         <!--android:id="@+id/leaderListView"-->
@@ -31,4 +98,4 @@
         <!--android:layout_alignParentBottom="true" />-->
 
 
-</RelativeLayout>
+</LinearLayout>

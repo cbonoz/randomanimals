@@ -3,10 +3,12 @@ package com.randomanimals.www.randomanimals.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.randomanimals.www.randomanimals.Constants;
 import com.randomanimals.www.randomanimals.events.LeaderEvent;
 import com.randomanimals.www.randomanimals.events.ProfileEvent;
+import com.randomanimals.www.randomanimals.events.UsernameEvent;
 import com.randomanimals.www.randomanimals.models.Animal;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +42,7 @@ public class WebService extends IntentService {
     private static OkHttpClient client = new OkHttpClient();
 
     String post(String url, String json) throws IOException {
-        Log.d(TAG, url + ": " + json);
+        Log.d(TAG, "Post " + url + ": " + json);
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
@@ -55,31 +57,64 @@ public class WebService extends IntentService {
         String url = intent.getStringExtra("url");
         String body = intent.getStringExtra("body");
         Log.d(TAG, "WebService");
-        String result;
+        String result = null;
         try {
             result = post(url, body);
         } catch (Exception e) {
             Log.e(TAG, "Error with post request: " + url);
             Log.e(TAG, e.toString());
+            Toast.makeText(getApplicationContext(), "Leaderboards Disabled", Toast.LENGTH_SHORT).show();
             result = null;
-        }
-        Log.d(TAG, "Post result: " + result);
-        if (result != null) {
-            switch (url) {
-                case Constants.ANIMAL_URL:
-                    LeaderEvent leaderEvent = new LeaderEvent(animalListFromResponse(result));
-                    EventBus.getDefault().post(leaderEvent);
-                    break;
-                case Constants.PROFILE_URL:
-                    ProfileEvent profileEvent = new ProfileEvent(animalListFromResponse(result));
-                    EventBus.getDefault().post(profileEvent);
-                    break;
-                case Constants.INCREMENT_URL:
-                    Log.d(TAG, "Increment: " + result);
-                    break;
-                default:
-                    Log.e(TAG, "Unknown url: " + url);
-                    break;
+        } finally {
+            Log.d(TAG, "Result " + url + ": " + result);
+            if (result != null) {
+                String username = null;
+                switch (url) {
+                    case Constants.ANIMAL_URL:
+                        LeaderEvent leaderEvent = new LeaderEvent(animalListFromResponse(result));
+                        EventBus.getDefault().post(leaderEvent);
+                        break;
+                    case Constants.PROFILE_URL:
+                        final List<Animal> animals = animalListFromResponse(result);
+                        if (animals.size() > 0) {
+                            username =  animals.get(0).username;
+                        }
+                        ProfileEvent profileEvent = new ProfileEvent(animals, username);
+                        EventBus.getDefault().post(profileEvent);
+                        break;
+                    case Constants.USERNAME_URL:
+                        try {
+                            JSONObject resp = new JSONObject(result);
+                            username = resp.getString("username");
+                            UsernameEvent usernameEvent = new UsernameEvent(username);
+                            EventBus.getDefault().post(usernameEvent);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                            EventBus.getDefault().post(new UsernameEvent());
+                        }
+                        break;
+                    case Constants.INCREMENT_URL:
+                        break;
+                    default:
+                        Log.e(TAG, "Unknown url: " + url);
+                        break;
+                }
+            } else {
+                switch (url) {
+                    case Constants.ANIMAL_URL:
+                        // Error Handling - emit empty event of appropriate event class.
+                        EventBus.getDefault().post(new LeaderEvent());
+                        break;
+                    case Constants.PROFILE_URL:
+                        EventBus.getDefault().post(new ProfileEvent());
+                        break;
+                    case Constants.USERNAME_URL:
+                        EventBus.getDefault().post(new UsernameEvent());
+                        break;
+                    default:
+                        Log.e(TAG, "Unknown url: " + url);
+                        break;
+                }
             }
         }
     }

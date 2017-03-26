@@ -2,9 +2,8 @@ package com.randomanimals.www.randomanimals.fragments;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -17,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.randomanimals.www.randomanimals.Constants;
+import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
-import com.randomanimals.www.randomanimals.models.UserInfo;
+import com.randomanimals.www.randomanimals.services.ValidatorUtil;
+import com.randomanimals.www.randomanimals.services.WebService;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +31,24 @@ public class UserDialogFragment extends DialogFragment {
 
     public UserDialogFragment() {
         // Required empty public constructor
+    }
+
+
+    private void postUsername(String username) {
+        Intent userIntent = new Intent(getActivity(), WebService.class);
+        try {
+            JSONObject userJson = new JSONObject();
+            final MainActivity context = (MainActivity) getActivity();
+            String androidId = context.getAndroidId();
+            userJson.put("userid", androidId);
+            userJson.put("username", username);
+
+            userIntent.putExtra("url", Constants.USERNAME_URL);
+            userIntent.putExtra("body", userJson.toString());
+            context.startService(userIntent);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
 
@@ -55,10 +76,16 @@ public class UserDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         // sign in the user ...
                         TextView userText = (TextView) view.findViewById(R.id.userEditText);
-                        final String userName = userText.getText().toString();
-                        saveUserName(userName);
+                        final String username = userText.getText().toString();
+                        if (!ValidatorUtil.validateUsername(username)) {
+                            String error = String.format("Username must be between %s and %s characters",
+                                    Constants.MIN_USERNAME_LENGTH, Constants.MAX_USERNAME_LENGTH);
+                            Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        postUsername(username);
+                        UserDialogFragment.this.getDialog().dismiss();
 
-                        UserDialogFragment.this.getDialog().cancel();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -70,18 +97,4 @@ public class UserDialogFragment extends DialogFragment {
     }
 
 
-    private void saveUserName(String username) {
-        if (username.length() < Constants.MIN_USERNAME_LENGTH) {
-            Toast.makeText(getActivity(),
-                    "Username must be at least " + Constants.MIN_USERNAME_LENGTH + " characters.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putString("username", username);
-        prefsEditor.apply();
-        Log.d(TAG, "Set username: " + UserInfo.username);
-        UserInfo.username = username;
-    }
 }
