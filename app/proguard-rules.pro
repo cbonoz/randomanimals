@@ -16,6 +16,7 @@
 #   public *;
 #}
 -dontwarn okio.**
+-keep class com.squareup.okhttp.** { *;}
 -keepattributes *Annotation*
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;

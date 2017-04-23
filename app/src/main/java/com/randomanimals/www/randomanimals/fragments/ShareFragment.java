@@ -25,7 +25,7 @@ public class ShareFragment extends Fragment {
 
     private void shareTwitter(String message) {
         Intent tweet = new Intent(Intent.ACTION_VIEW);
-        tweet.setData(Uri.parse("http://twitter.com/?status=" + Uri.encode(message)));
+        tweet.setData(Uri.parse("http://twitter.com/intent/tweet?text=" + Uri.encode(message)));
         startActivity(tweet);
     }
 

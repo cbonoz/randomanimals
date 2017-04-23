@@ -1,5 +1,6 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.randomanimals.www.randomanimals.fragments.ShareFragment">
@@ -7,15 +8,18 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
         android:textSize="14sp"
         android:text="@string/share_twitter" />
 
     <ImageButton
         android:id="@+id/twitterButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:background="@android:color/transparent"
         android:src="@drawable/twitter_button" />
 
-</FrameLayout>
+</LinearLayout>

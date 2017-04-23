@@ -1,8 +1,6 @@
 package com.randomanimals.www.randomanimals.fragments;
 
 
-import android.content.res.AssetManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -26,11 +24,7 @@ import java.util.List;
 public class SoundFragment extends Fragment {
     private static final String TAG = "SoundFragment";
 
-    private boolean isNormalAdapter = false;
     private RecyclerView mRecyclerView;
-
-    private final MediaPlayer player = new MediaPlayer();
-    private AssetManager aMan;
 
     public SoundFragment() {
         // Required empty public constructor
