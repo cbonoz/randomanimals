@@ -36,7 +36,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/" + DB_NAME);
 
 // create a schema for animal sounds.
 var AnimalSchema = mongoose.Schema({
-  userid: {type: String},
+  userId: {type: String},
   username: String,
   animal: String,
   created: { type: Date, default: Date.now },
@@ -81,13 +81,13 @@ app.post('/ra/animal', function(req, res) {
   });
 });
 
-// Get list of animal sound plays associated with the given userid.
-app.post('/ra/userid', function(req, res) {
+// Get list of animal sound plays associated with the given userId.
+app.post('/ra/userId', function(req, res) {
   //Find
-  Animal.find({'userid': req.body.userid.toLowerCase()})
+  Animal.find({'userId': req.body.userId.toLowerCase()})
     .sort({count: -1})
     .exec(function(err, msgs) {
-        console.log('callback of userid: ' + msgs);
+        console.log('callback of userId: ' + msgs);
         res.json(msgs);
   });
 });
@@ -96,7 +96,7 @@ app.post('/ra/userid', function(req, res) {
 app.post('/ra/username', function(req, res) {
   //Find
   var newUsername = req.body.username;
-  var targetObj = {userid: req.body.userid}
+  var targetObj = {userId: req.body.userId}
   Animal.update(targetObj, {username: newUsername}, {multi: true}, 
     function(err, num) {
       res.json({status: "updated: " + JSON.stringify(num)})
@@ -108,11 +108,11 @@ app.post('/ra/username', function(req, res) {
 app.post('/ra/increment', function(req, res) {
   //Find
   var targetObj = {
-    'userid': req.body.userid.toLowerCase(),
+    'userId': req.body.userId.toLowerCase(),
     'animal': req.body.animal.toLowerCase()
   };
   Animal.findOneAndUpdate(targetObj, 
-    { $set: { "userid" : targetObj.userid, "animal" : targetObj.animal, "username": req.body.username}, $inc : { "count" : 1 } },
+    { $set: { "userId" : targetObj.userId, "animal" : targetObj.animal, "username": req.body.username}, $inc : { "count" : 1 } },
     { sort: { "count" : 1 }, upsert: true, setDefaultsOnInsert: true, returnNewDocument : true })
     .exec(function(err, db_res) { 
       if (err) { 
@@ -170,9 +170,9 @@ app.post('/ra/increment', function(req, res) {
 //   //Listens for a new chat message
 //   socket.on(PLAY_EVENT, function(data) {
 //     var existingCount = 0;
-//     var targetObj = {"userid": data.userid, "animal": data.animal};
+//     var targetObj = {"userId": data.userId, "animal": data.animal};
 //     Animal.findOneAndUpdate(targetObj, 
-//     { $set: { "userid" : data.userid, "animal" : data.animal, "username": data.username}, $inc : { "count" : 5 } },
+//     { $set: { "userId" : data.userId, "animal" : data.animal, "username": data.username}, $inc : { "count" : 5 } },
 //     { sort: { "count" : 1 }, upsert:true, returnNewDocument : true });
 //     // //Save it to database
 //     // newMsg.save(function(err, msg){

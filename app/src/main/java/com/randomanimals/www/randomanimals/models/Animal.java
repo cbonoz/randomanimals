@@ -8,14 +8,14 @@ import java.util.Date;
 
 public class Animal {
 
-    public String userid;
+    public String userId;
     public String username;
     public String animal;
     public int count = 0;
     public Date created;
 
-    public Animal(String userid, String username, String animal, int count, Date created) {
-        this.userid = userid;
+    public Animal(String userId, String username, String animal, int count, Date created) {
+        this.userId = userId;
         this.username = username;
         this.animal = animal;
         this.count = count;

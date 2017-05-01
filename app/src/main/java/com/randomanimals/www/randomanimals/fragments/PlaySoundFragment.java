@@ -67,7 +67,7 @@ public class PlaySoundFragment extends Fragment implements
         Intent incIntent = new Intent(getActivity(), WebService.class);
         try {
             JSONObject incJson = new JSONObject();
-            incJson.put("userid", androidId);
+            incJson.put("userId", androidId);
             incJson.put("animal", animal);
             MainActivity context = (MainActivity) getActivity();
             incJson.put("username", context.username);

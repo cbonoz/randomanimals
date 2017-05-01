@@ -40,7 +40,7 @@ public class UserDialogFragment extends DialogFragment {
             JSONObject userJson = new JSONObject();
             final MainActivity context = (MainActivity) getActivity();
             String androidId = context.getAndroidId();
-            userJson.put("userid", androidId);
+            userJson.put("userId", androidId);
             userJson.put("username", username);
 
             userIntent.putExtra("url", Constants.USERNAME_URL);

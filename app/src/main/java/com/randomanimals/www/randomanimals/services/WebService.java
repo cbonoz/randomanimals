@@ -125,7 +125,7 @@ public class WebService extends IntentService {
             JSONArray jsonArray = new JSONArray(result);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
-                Animal animal = new Animal(obj.getString("userid"), obj.getString("username"),
+                Animal animal = new Animal(obj.getString("userId"), obj.getString("username"),
                         obj.getString("animal"), obj.getInt("count"), null);
                 animals.add(animal);
             }

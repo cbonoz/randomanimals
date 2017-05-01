@@ -79,7 +79,7 @@ public class ProfileFragment extends Fragment {
         Intent profileIntent = new Intent(getActivity(), WebService.class);
         try {
             JSONObject profileJson = new JSONObject();
-            profileJson.put("userid", androidId);
+            profileJson.put("userId", androidId);
 
             profileIntent.putExtra("url", Constants.PROFILE_URL);
             profileIntent.putExtra("body", profileJson.toString());
