@@ -1,17 +1,12 @@
 package com.randomanimals.www.randomanimals;
 
-/**
- * Created by cbono on 2/17/17.
- */
-
 public class Constants {
     private Constants() {
-
     }
 
-    // TODO: Change to remote server.
-    private static final String BASE_URL = "http://35.167.54.81:9001/ra";// "http://localhost:3001";
-    public static final String IO_SOCKET = BASE_URL;
+    // private static final String BASE_URL = "http://35.167.54.81:9001/ra"; // old aws instance.
+    // TODO: move this to load balancer url.
+    private static final String BASE_URL = "http://blackshoalgroup.com:9001/ra";
 
     public static final String ANIMAL_URL = BASE_URL + "/animal";
     public static final String PROFILE_URL = BASE_URL + "/userid";
