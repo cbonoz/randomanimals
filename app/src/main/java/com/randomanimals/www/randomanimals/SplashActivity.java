@@ -26,7 +26,7 @@ public class SplashActivity extends AwesomeSplash  {
             duration = 500;
         } else {
             // Production duration for into splash screen animations.
-            duration = 2000;
+            duration = 1000;
         }
         Log.d(TAG, "Splash duration: " + duration);
 

@@ -1,17 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="20dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
+    <!--android:background="#FFFFBB33"-->
     <TextView
         android:text="@string/dialog_username"
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:textSize="24sp"
-        android:padding="8dp"
+        android:padding="10dp"
+        android:background="@color/primary_light"
         android:layout_height="60dp"
         android:scaleType="center"
-        android:background="#FFFFBB33"
         android:contentDescription="@string/app_name" />
 
     <EditText
