@@ -1,3 +1,6 @@
+# ignore releae build
+app/app-release.apk
+
 *.iml
 .gradle
 /local.properties
