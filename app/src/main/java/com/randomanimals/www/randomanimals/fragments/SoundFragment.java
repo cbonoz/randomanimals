@@ -39,7 +39,6 @@ public class SoundFragment extends Fragment {
         soundList = ((MainActivity) getActivity()).getSoundFiles();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,7 +83,7 @@ public class SoundFragment extends Fragment {
         adapter.setOnClickEvent(new ParallaxRecyclerAdapter.OnClickEvent() {
             @Override
             public void onClick(View v, int position) {
-                ((MainActivity) getActivity()).launchSoundFragment(soundList.get(position));
+                ((MainActivity) getActivity()).launchSoundFragment(soundList.get(position), position);
 //                playSoundAtPosition(position);
             }
         });

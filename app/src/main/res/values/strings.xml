@@ -18,7 +18,8 @@
     <string name="no_leaders">No Leaders</string>
     <string name="no_plays">No play history yet</string>
 
-    <string name="share_twitter">Clicking image will open Twitter in a browser window</string>
+    <string name="share_twitter">Clicking will open Twitter dialog</string>
+    <string name="share_text">Or share via text message</string>
     <string name="twitter_line">Find Random Animals on Google Play - try and beat my score</string>
 
     <string name="confirm">Confirm</string>

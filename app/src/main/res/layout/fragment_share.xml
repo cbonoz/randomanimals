@@ -5,21 +5,45 @@
     android:layout_height="match_parent"
     tools:context="com.randomanimals.www.randomanimals.fragments.ShareFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:textSize="14sp"
+        android:textSize="20sp"
         android:text="@string/share_twitter" />
 
     <ImageButton
         android:id="@+id/twitterButton"
         android:layout_gravity="center"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         android:background="@android:color/transparent"
         android:src="@drawable/twitter_button" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:layout_margin="20dp"
+        android:background="@color/primary_dark"/>
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:textSize="16sp"-->
+        <!--android:text="@string/share_text" />-->
+
+    <Button
+        android:id="@+id/textMessageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@color/accent"
+        android:drawableLeft="@drawable/zzz_share"
+        android:text="Or send link via Text" />
 
 </LinearLayout>

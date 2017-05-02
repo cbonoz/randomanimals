@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  * http://www.androidhive.info/2012/03/android-building-audio-player-tutorial/
@@ -52,8 +54,9 @@ public class PlaySoundFragment extends Fragment implements
     Handler handler;
     TextView titleText;
 
-    String animal;
-    String fileName;
+    private String animal;
+    private String fileName;
+    private int listPosition;
 
     private static final TimerUtil utils = new TimerUtil();
 
@@ -66,15 +69,17 @@ public class PlaySoundFragment extends Fragment implements
     private void incrementPlayCount() {
         Intent incIntent = new Intent(getActivity(), WebService.class);
         try {
+            MainActivity context = (MainActivity) getActivity();
+
             JSONObject incJson = new JSONObject();
             incJson.put("userId", androidId);
             incJson.put("animal", animal);
-            MainActivity context = (MainActivity) getActivity();
             incJson.put("username", context.username);
 
             incIntent.putExtra("url", Constants.INCREMENT_URL);
             incIntent.putExtra("body", incJson.toString());
-            ((MainActivity) getActivity()).startService(incIntent);
+
+            context.startService(incIntent);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
@@ -168,9 +173,7 @@ public class PlaySoundFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play_sound, container, false);
-
-//        Image = (ImageView) view.findViewById(R.id.pdfview);
-//        Image.setImageResource(R.drawable.wereim);
+        ButterKnife.bind(this, view);
 
         final MainActivity context = ((MainActivity) getActivity());
         androidId = context.getAndroidId();
@@ -178,6 +181,7 @@ public class PlaySoundFragment extends Fragment implements
         final Bundle bundle = getArguments();
         animal = bundle.getString("animal");
         fileName = bundle.getString("fileName");
+        listPosition = bundle.getInt("listPosition");
 
         titleText = (TextView) view.findViewById(R.id.titleText);
         titleText.setText(animal);

@@ -9,5 +9,14 @@
     <color name="tan">#e4d5c7</color>
     <color name="listRed">#ec0606</color>
 
+    <color name="primary">#795548</color>
+    <color name="primary_dark">#5D4037</color>
+    <color name="primary_light">#D7CCC8</color>
+    <color name="accent">#CDDC39</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+
     <color name="black_overlay">#66000000</color>
 </resources>

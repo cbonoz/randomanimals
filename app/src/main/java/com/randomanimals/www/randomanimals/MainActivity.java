@@ -1,8 +1,8 @@
 package com.randomanimals.www.randomanimals;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity
 
     private Class currentFragmentClass = SoundFragment.class;
 
-    private AssetManager aMan;
     public ArrayList<SoundFile> soundFiles = new ArrayList<>();
 
     private String androidId;
@@ -55,11 +54,9 @@ public class MainActivity extends AppCompatActivity
     private void initSoundFiles() {
         String[] files;
         try {
-            aMan = getAssets();
             files = getResources().getAssets().list(Constants.SOUND_FOLDER);
             Log.d(TAG, "files: " + Arrays.toString(files));
         } catch (IOException e) {
-            aMan = null;
             Log.e(TAG, e.toString());
             files =  new String[]{};
         }
@@ -86,6 +83,17 @@ public class MainActivity extends AppCompatActivity
         return "guest" + Math.round(Math.random()*Integer.MAX_VALUE/100);
     }
 
+    protected void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        if (data != null)  {
+            if (data.contains("random-animals")) {
+                Log.d(TAG, "random animals onNewIntent");
+            }
+            // TODO: launch into sound fragment
+            // launchSoundFragment(soundFiles.get(listPosition), listPosition);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +109,7 @@ public class MainActivity extends AppCompatActivity
         if (!ValidatorUtil.validateUsername(username)) {
             saveStringPref(Constants.USERNAME_KEY, generateUserName());
         }
+
         initSoundFiles();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,6 +120,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        onNewIntent(getIntent());
 
         try {
             launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
@@ -170,16 +181,12 @@ public class MainActivity extends AppCompatActivity
 
         transaction.replace(R.id.flContent, fragment).commit();
 
-        // Highlight selected item.
-//        menuItem.setChecked(true);
-//        setTitle(menuItem.getTitle());
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public boolean launchSoundFragment(SoundFile soundFile) {
+    public boolean launchSoundFragment(SoundFile soundFile, final int listPosition) {
         final Class fragmentClass = PlaySoundFragment.class;
         String animal = soundFile.getAnimal();
         String fileName = soundFile.getFileName();
@@ -195,8 +202,8 @@ public class MainActivity extends AppCompatActivity
         Bundle args = new Bundle();
         args.putString("fileName", fileName);
         args.putString("animal", animal);
+        args.putInt("listPosition", listPosition);
         fragment.setArguments(args);
-
         return launchFragment(fragment, Constants.ENTER_RIGHT);
     }
 
@@ -249,9 +256,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
             return false;
         }
-
         return launchFragment(fragment, Constants.ENTER_LEFT);
-
     }
 
 //    if (!ValidatorUtil.validateUsername(value)) {
@@ -273,12 +278,5 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.apply();
         Log.d(TAG, "Set " + key + ": " + value);
     }
-
-
-
-//    public UserInfo userInfo;
-//    private static final Gson gson = new Gson();
-
-
 
 }
