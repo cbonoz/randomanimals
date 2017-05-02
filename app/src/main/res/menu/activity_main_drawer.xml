@@ -7,10 +7,17 @@
             android:icon="@drawable/ic_menu_send"
             android:title="Sounds" />
 
+        <!--android:icon="@drawable/ic_menu_manage"-->
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/zzz_face_profile"
             android:title="Profile" />
+
+        <!--android:icon="@drawable/ic_menu_gallery"-->
+        <item
+            android:id="@+id/nav_leader"
+            android:icon="@drawable/zzz_bulletin_board"
+            android:title="Leaderboards" />
 
         <!--<item-->
             <!--android:id="@+id/nav_quiz"-->
@@ -25,16 +32,15 @@
 
     <item android:title="World">
         <menu>
-             <item
-                android:id="@+id/nav_leader"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Leaderboards" />
-
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/zzz_twitter"
                 android:title="Post on Twitter" />
 
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/zzz_information"
+                android:title="Special Thanks" />
         </menu>
     </item>
 

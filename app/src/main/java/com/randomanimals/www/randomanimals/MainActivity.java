@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.randomanimals.www.randomanimals.fragments.AboutFragment;
 import com.randomanimals.www.randomanimals.fragments.LeaderFragment;
 import com.randomanimals.www.randomanimals.fragments.PlaySoundFragment;
 import com.randomanimals.www.randomanimals.fragments.ProfileFragment;
@@ -241,6 +242,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_share:
                 fragmentClass = ShareFragment.class;
                 title = "Share RandomAnimals";
+                break;
+            case R.id.nav_about:
+                fragmentClass = AboutFragment.class;
+                title = "Special Thanks";
                 break;
             default:
                 fragmentClass = SoundFragment.class;
