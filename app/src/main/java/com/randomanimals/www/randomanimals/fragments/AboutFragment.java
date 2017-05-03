@@ -18,13 +18,11 @@ import butterknife.ButterKnife;
  */
 public class AboutFragment extends Fragment {
 
-
     public AboutFragment() {
         // Required empty public constructor
     }
 
     @BindView(R.id.theWebView) WebView view;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,7 +32,7 @@ public class AboutFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         String url = getString(R.string.about_file);
-
+        loadWebView(url);
         return view;
     }
 

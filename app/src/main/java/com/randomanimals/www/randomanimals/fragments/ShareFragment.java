@@ -50,7 +50,7 @@ public class ShareFragment extends Fragment {
         sendIntent.putExtra("sms_body", "Free animal sounds app on android, pretty funny. " +
                 animalUri);
         startActivity(sendIntent);
-        Toast.makeText(getActivity(), "select recipient", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "select text application", Toast.LENGTH_SHORT).show();
     }
 
     @Override
