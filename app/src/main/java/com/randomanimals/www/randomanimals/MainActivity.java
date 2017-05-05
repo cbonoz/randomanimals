@@ -19,13 +19,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.randomanimals.www.randomanimals.fragments.AboutFragment;
 import com.randomanimals.www.randomanimals.fragments.LeaderFragment;
 import com.randomanimals.www.randomanimals.fragments.PlaySoundFragment;
 import com.randomanimals.www.randomanimals.fragments.ProfileFragment;
 import com.randomanimals.www.randomanimals.fragments.QuizFragment;
 import com.randomanimals.www.randomanimals.fragments.ShareFragment;
-import com.randomanimals.www.randomanimals.fragments.SoundFragment;
+import com.randomanimals.www.randomanimals.fragments.SoundListFragment;
 import com.randomanimals.www.randomanimals.models.SoundFile;
 import com.randomanimals.www.randomanimals.services.ValidatorUtil;
 
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
-    private Class currentFragmentClass = SoundFragment.class;
+    private Class currentFragmentClass = SoundListFragment.class;
 
     public ArrayList<SoundFile> soundFiles = new ArrayList<>();
 
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         soundFiles.clear();
+        int i = 0;
         for (String soundFile : files) {
             if (!soundFile.contains("mp3")) {
                 continue;
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 String animal = soundFile.split("-")[0];
                 animal = animal.replace("_", " ");
-                soundFiles.add(new SoundFile(soundFile, animal));
+                soundFiles.add(new SoundFile(soundFile, animal, i++));
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 Log.e(TAG, "Bad formatting of animal file, should be <animal>-<id>.mp3");
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5780102660170607~3225694773");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.app_name);
@@ -125,11 +130,21 @@ public class MainActivity extends AppCompatActivity
         onNewIntent(getIntent());
 
         try {
-            launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
+            launchFragment(SoundListFragment.class.newInstance(), Constants.ENTER_LEFT);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
+
+        // Initialize ad banner at bottom of page.
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        final AdRequest adRequest = new AdRequest.Builder()
+                .setGender(AdRequest.GENDER_MALE)
+                .addKeyword("animal")
+                .setIsDesignedForFamilies(true)
+                .build();
+        mAdView.loadAd(adRequest);
+
     }
 
     @Override
@@ -187,10 +202,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public boolean launchSoundFragment(SoundFile soundFile, final int listPosition) {
+    public boolean launchSoundFragment(SoundFile soundFile,
+                                       final int listPosition,
+                                       final int bonus) {
         final Class fragmentClass = PlaySoundFragment.class;
-        String animal = soundFile.getAnimal();
-        String fileName = soundFile.getFileName();
+        String animal = soundFile.animal;
+        String fileName = soundFile.fileName;
         Fragment fragment;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -204,6 +221,7 @@ public class MainActivity extends AppCompatActivity
         args.putString("fileName", fileName);
         args.putString("animal", animal);
         args.putInt("listPosition", listPosition);
+        args.putInt("bonus", bonus);
         fragment.setArguments(args);
         return launchFragment(fragment, Constants.ENTER_RIGHT);
     }
@@ -224,7 +242,7 @@ public class MainActivity extends AppCompatActivity
         final String title;
         switch (id) {
             case R.id.nav_sounds:
-                fragmentClass = SoundFragment.class;
+                fragmentClass = SoundListFragment.class;
                 title = "Animal Sounds";
                 break;
             case R.id.nav_leader:
@@ -248,7 +266,7 @@ public class MainActivity extends AppCompatActivity
                 title = "Special Thanks";
                 break;
             default:
-                fragmentClass = SoundFragment.class;
+                fragmentClass = SoundListFragment.class;
                 title = "Animal Sounds";
                 break;
         }
@@ -283,5 +301,6 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.apply();
         Log.d(TAG, "Set " + key + ": " + value);
     }
+
 
 }

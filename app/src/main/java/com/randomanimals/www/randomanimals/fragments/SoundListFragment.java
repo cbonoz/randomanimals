@@ -2,31 +2,41 @@ package com.randomanimals.www.randomanimals.fragments;
 
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.poliveira.parallaxrecyclerview.HeaderLayoutManagerFixed;
 import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
 import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
+import com.randomanimals.www.randomanimals.fragments.dialogs.RandomDialog;
 import com.randomanimals.www.randomanimals.models.SoundFile;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
- * SoundFragment with the list of animal sounds for the user to select from.
+ * SoundListFragment with the list of animal sounds for the user to select from.
  */
-public class SoundFragment extends Fragment {
-    private static final String TAG = "SoundFragment";
+public class SoundListFragment extends Fragment {
+    private static final String TAG = "SoundListFragment";
 
-    private RecyclerView mRecyclerView;
+    private static final int STANDARD_BONUS = 1;
 
-    public SoundFragment() {
+    @BindView(R.id.recycler) RecyclerView mRecyclerView;
+
+    private ImageButton headerButton;
+
+    public SoundListFragment() {
         // Required empty public constructor
     }
 
@@ -45,8 +55,9 @@ public class SoundFragment extends Fragment {
         // Inflate the layout for this fragment
         Log.d(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_sound, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-        createAdapter(mRecyclerView);
+        ButterKnife.bind(this, view);
+
+        initSoundListAdapter(mRecyclerView);
         return view;
     }
 
@@ -57,21 +68,21 @@ public class SoundFragment extends Fragment {
     }
 
     private void restoreListPosition() {
-        ((HeaderLayoutManagerFixed) mRecyclerView.getLayoutManager()).scrollToPosition(firstVisiblePosition);
+        mRecyclerView.getLayoutManager().scrollToPosition(firstVisiblePosition);
     }
 
     // ** List View Adapter Logic Below ** //
 
-    private void createAdapter(RecyclerView recyclerView) {
+    private void initSoundListAdapter(RecyclerView recyclerView) {
         final ParallaxRecyclerAdapter<SoundFile> adapter = new ParallaxRecyclerAdapter<SoundFile>(soundList) {
             @Override
             public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter<SoundFile> adapter, int i) {
-                ((SoundFragment.ViewHolder) viewHolder).textView.setText(adapter.getData().get(i).getAnimal());
+                ((SoundListFragment.ViewHolder) viewHolder).textView.setText(adapter.getData().get(i).animal);
             }
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, final ParallaxRecyclerAdapter<SoundFile> adapter, int i) {
-                return new SoundFragment.ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.sound_list_item, viewGroup, false));
+                return new SoundListFragment.ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.sound_list_item, viewGroup, false));
             }
 
             @Override
@@ -83,15 +94,27 @@ public class SoundFragment extends Fragment {
         adapter.setOnClickEvent(new ParallaxRecyclerAdapter.OnClickEvent() {
             @Override
             public void onClick(View v, int position) {
-                ((MainActivity) getActivity()).launchSoundFragment(soundList.get(position), position);
-//                playSoundAtPosition(position);
+                ((MainActivity) getActivity()).launchSoundFragment(
+                        soundList.get(position),
+                        position,
+                        STANDARD_BONUS);
             }
         });
-
 
         HeaderLayoutManagerFixed layoutManagerFixed = new HeaderLayoutManagerFixed(getActivity());
         recyclerView.setLayoutManager(layoutManagerFixed);
         View header = getActivity().getLayoutInflater().inflate(R.layout.header, recyclerView, false);
+
+        headerButton = (ImageButton) header.findViewById(R.id.headerImageButton);
+        headerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onHeaderButton click");
+                DialogFragment newFragment = RandomDialog.newInstance(10);
+                newFragment.show(getActivity().getSupportFragmentManager(), "Random Animal");
+            }
+        });
+
         layoutManagerFixed.setHeaderIncrementFixer(header);
         adapter.setShouldClipView(false);
         adapter.setParallaxHeader(header, recyclerView);
@@ -99,7 +122,7 @@ public class SoundFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
 
         public ViewHolder(View itemView) {
@@ -107,7 +130,6 @@ public class SoundFragment extends Fragment {
             textView = (TextView) itemView.findViewById(R.id.textView);
         }
     }
-
 
     @Override
     public void onResume() {

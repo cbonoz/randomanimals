@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "31284061131",
+    "firebase_url": "https://randomanimals-bd1b3.firebaseio.com",
+    "project_id": "randomanimals-bd1b3",
+    "storage_bucket": "randomanimals-bd1b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31284061131:android:13540b728520da7d",
+        "android_client_info": {
+          "package_name": "com.randomanimals.www.randomanimals"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31284061131-0ja44v1mbcrou4q76h49aofc97sv4e5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYKSH5YPSku2Notso4l_pbQE-5kPxgMCw"
+        },
+        {
+          "current_key": "AIzaSyDuU_aPmRKiuvzOYge376S-HLHykNaVyYw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

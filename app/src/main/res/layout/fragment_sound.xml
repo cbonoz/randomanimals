@@ -2,17 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.randomanimals.www.randomanimals.fragments.SoundFragment">
+    tools:context="com.randomanimals.www.randomanimals.fragments.SoundListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Animals"/>
-    <view
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="android.support.v7.widget.RecyclerView"
         android:id="@+id/recycler"
         android:layout_gravity="left|top"/>
 

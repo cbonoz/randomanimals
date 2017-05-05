@@ -19,4 +19,8 @@
     <color name="divider">#BDBDBD</color>
 
     <color name="black_overlay">#66000000</color>
+
+    <color name="wheel_color_1">#ffFFE0B2</color>
+    <color name="wheel_color_2">#ffFFCC80</color>
+    <color name="wheel_color_3">#ffFFF3E0</color>
 </resources>

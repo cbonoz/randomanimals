@@ -22,6 +22,7 @@ import com.randomanimals.www.randomanimals.R;
 import com.randomanimals.www.randomanimals.adapters.AnimalPlaysAdapter;
 import com.randomanimals.www.randomanimals.events.ProfileEvent;
 import com.randomanimals.www.randomanimals.events.UsernameEvent;
+import com.randomanimals.www.randomanimals.fragments.dialogs.UserDialogFragment;
 import com.randomanimals.www.randomanimals.services.WebService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -178,7 +179,7 @@ public class ProfileFragment extends Fragment {
         context.saveStringPref(Constants.USERNAME_KEY, newUsername);
         updateUserText(newUsername);
         try {
-            context.launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
+            context.launchFragment(SoundListFragment.class.newInstance(), Constants.ENTER_LEFT);
             Toast.makeText(context, "User now: " + newUsername, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, e.toString());

@@ -7,11 +7,12 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:textAlignment="center"
         android:layout_height="24dp"
         android:layout_gravity="center"
         android:fontFamily="sans-serif"
-        android:layout_margin="20dp"
-        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:textSize="16sp"
         android:text="@string/share_twitter" />
 
     <ImageButton
@@ -30,7 +31,7 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_margin="0dp"
         android:textAlignment="center"
         android:textSize="16sp"
@@ -42,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="10dp"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:background="@color/accent"
         android:drawableLeft="@drawable/zzz_share"
         android:text="Or send link via Text" />

@@ -26,12 +26,17 @@ import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
 import com.randomanimals.www.randomanimals.Constants;
 import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
+import com.randomanimals.www.randomanimals.events.SoundEvent;
 import com.randomanimals.www.randomanimals.services.TimerUtil;
 import com.randomanimals.www.randomanimals.services.WebService;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 
@@ -57,12 +62,15 @@ public class PlaySoundFragment extends Fragment implements
     private String animal;
     private String fileName;
     private int listPosition;
+    private int bonus;
 
     private static final TimerUtil utils = new TimerUtil();
 
     public PlaySoundFragment() {
         // Required empty public constructor
     }
+
+
 
     private String androidId;
 
@@ -75,6 +83,7 @@ public class PlaySoundFragment extends Fragment implements
             incJson.put("userId", androidId);
             incJson.put("animal", animal);
             incJson.put("username", context.username);
+            incJson.put("bonus", bonus);
 
             incIntent.putExtra("url", Constants.INCREMENT_URL);
             incIntent.putExtra("body", incJson.toString());
@@ -138,8 +147,7 @@ public class PlaySoundFragment extends Fragment implements
         public void onCompletion(MediaPlayer mp) {
             Log.d(TAG, "onCompletion");
             incrementPlayCount(); // Increment count for animal.
-            // TODO: Move toast to incrementPlayCount callback.
-            makeSuperToastOnIncrement("+1 " + animal);
+
             // Changing button image to play button
             playPauseButton.setImageResource(R.drawable.audio_play);
         }
@@ -167,7 +175,7 @@ public class PlaySoundFragment extends Fragment implements
         playPauseButton.setImageResource(R.drawable.audio_pause);
     }
 
-//    http://stackoverflow.com/questions/16141167/android-audio-seekbar
+    //    http://stackoverflow.com/questions/16141167/android-audio-seekbar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -182,6 +190,7 @@ public class PlaySoundFragment extends Fragment implements
         animal = bundle.getString("animal");
         fileName = bundle.getString("fileName");
         listPosition = bundle.getInt("listPosition");
+        bonus = bundle.getInt("bonus", 1);
 
         titleText = (TextView) view.findViewById(R.id.titleText);
         titleText.setText(animal);
@@ -219,7 +228,7 @@ public class PlaySoundFragment extends Fragment implements
             @Override
             public void onClick(View v) {
             try {
-                context.launchFragment(SoundFragment.class.newInstance(), Constants.ENTER_LEFT);
+                context.launchFragment(SoundListFragment.class.newInstance(), Constants.ENTER_LEFT);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
@@ -291,7 +300,7 @@ public class PlaySoundFragment extends Fragment implements
     }
 
     /**
-     * When user stops moving the progress hanlder
+     * When user stops moving the progress handler
      * */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -322,10 +331,19 @@ public class PlaySoundFragment extends Fragment implements
         }
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+        EventBus.getDefault().register(this);
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop");
+        EventBus.getDefault().unregister(this);
         stopAndReleasePlayer();
     }
 
@@ -348,6 +366,14 @@ public class PlaySoundFragment extends Fragment implements
         super.onDestroy();
         Log.d(TAG, "onDestroy");
         stopAndReleasePlayer();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(SoundEvent event) {
+        final int bonus = event.bonus;
+        final String incMessage =
+                String.format(Locale.US, "+%d %s", bonus, animal);
+        makeSuperToastOnIncrement(incMessage);
     }
 
 }

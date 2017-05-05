@@ -7,15 +7,14 @@ package com.randomanimals.www.randomanimals.services;
 public class HelperUtil {
 
     private HelperUtil() {
-
     }
 
     public static String getCountStringFromCount(int count) {
         final String countString;
         if (count > 1) {
-            countString = count + " times";
+            countString = count + " points";
         } else {
-            countString = count + " time";
+            countString = count + " point";
         }
         return countString;
     }

@@ -1,4 +1,4 @@
-package com.randomanimals.www.randomanimals.fragments;
+package com.randomanimals.www.randomanimals.fragments.dialogs;
 
 
 import android.app.Dialog;

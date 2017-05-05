@@ -19,9 +19,10 @@
     <string name="no_leaders">No Leaders</string>
     <string name="no_plays">No play history yet</string>
 
-    <string name="share_twitter">Clicking will open Twitter dialog</string>
-    <string name="share_text">Just pick the text message application, and we\'ll preload an editable message for you to send.</string>
-    <string name="twitter_line">Find Random Animals on Google Play - try and beat my score</string>
+    <string name="share_twitter">Clicking the bird will open a Twitter post dialog</string>
+    <string name="share_text">Button will preload an example message for you to edit before sending.</string>
+
+    <string name="twitter_line">Find Random Animals on Google Play - listen to sounds and get on the leaderboard</string>
 
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
@@ -30,7 +31,12 @@
     <!--<string name="dialog_username_hint">Whatever you want</string>-->
     <string name="username_text">Leaderboard Username: <b>%1$s</b></string>
     <!--How much of an animal sounds freak are you?\n\t-->
-    <string name="profile_desc_text"><b>Here are your listening counts for this device. These counts appear on the animal leaderboards:</b></string>
+    <!--<string name="profile_desc_text"><b>Here are your listening counts for this device. These counts appear on the animal leaderboards:</b></string>-->
+    <string name="profile_desc_text">Your LeaderBoard Scores:</string>
+
+    <string name="ad_app_id">ca-app-pub-5780102660170607~3225694773</string>
+    <string name="ad_unit_id">ca-app-pub-5780102660170607/</string>
+    <string name="banner_ad_unit_id">ca-app-pub-5780102660170607/4702427976</string>
 
     <!--Error text-->
     <string name="internet_error">Could not connect to Internet service</string>

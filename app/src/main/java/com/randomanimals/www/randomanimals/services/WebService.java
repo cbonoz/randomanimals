@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.randomanimals.www.randomanimals.Constants;
 import com.randomanimals.www.randomanimals.events.LeaderEvent;
 import com.randomanimals.www.randomanimals.events.ProfileEvent;
+import com.randomanimals.www.randomanimals.events.SoundEvent;
 import com.randomanimals.www.randomanimals.events.UsernameEvent;
 import com.randomanimals.www.randomanimals.models.Animal;
 
@@ -94,6 +95,15 @@ public class WebService extends IntentService {
                         }
                         break;
                     case Constants.INCREMENT_URL:
+                        try {
+                            JSONObject resp = new JSONObject(result);
+                            final int bonus = resp.getInt("data");
+                            EventBus.getDefault().post(new SoundEvent(bonus));
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                            // TODO: handle connection error.
+                            EventBus.getDefault().post(new SoundEvent(1));
+                        }
                         break;
                     default:
                         Log.e(TAG, "Unknown url: " + url);
@@ -110,6 +120,9 @@ public class WebService extends IntentService {
                         break;
                     case Constants.USERNAME_URL:
                         EventBus.getDefault().post(new UsernameEvent());
+                        break;
+                    case Constants.INCREMENT_URL:
+                        Log.d(TAG, "Increment response: " + result);
                         break;
                     default:
                         Log.e(TAG, "Unknown url: " + url);

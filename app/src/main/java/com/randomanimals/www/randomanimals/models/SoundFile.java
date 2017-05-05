@@ -6,29 +6,14 @@ package com.randomanimals.www.randomanimals.models;
 
 public class SoundFile {
 
-    String fileName;
-    String animal;
+    public String fileName;
+    public String animal;
+    public int listPosition;
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getAnimal() {
-        return animal;
-    }
-
-    public void setAnimal(String animal) {
-        this.animal = animal;
-    }
-
-    public SoundFile(String fileName, String animal) {
-
+    public SoundFile(String fileName, String animal, int listPosition) {
         this.fileName = fileName;
         this.animal = animal;
+        this.listPosition = listPosition;
     }
 
     @Override

@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:src="@drawable/random_animals_108"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:scaleType="center"
+        android:background="#FFFFBB33"
+        android:contentDescription="@string/app_name" />
+
+    <!--app:lkwCenterImage="@drawable/random_animals_108"-->
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <ImageView
+            android:src="@drawable/test4"
+            android:layout_gravity="top|end"
+            android:layout_margin="10dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+
+        <ImageView
+            android:src="@drawable/test2"
+            android:layout_gravity="top|start"
+            android:layout_margin="10dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+
+        <ImageView
+            android:src="@drawable/test6"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+
+        <ImageView
+            android:src="@drawable/test5"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="10dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+        <rubikstudio.library.LuckyWheelView
+            android:layout_centerInParent="true"
+            app:lkwBackgroundColor="#FF9800"
+            app:lkwTextColor="#263238"
+            app:lkwCenterImage="@drawable/wheel"
+            app:lkwCursor="@drawable/ic_cursor"
+            android:id="@+id/luckyWheel"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+
+    <Button
+        android:id="@+id/play"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:text="SPIN THE WHEEL"
+        android:textStyle="bold"
+        android:background="#F44336"
+        android:layout_gravity="center|bottom"
+        android:layout_margin="20dp"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
+
+
+</LinearLayout>

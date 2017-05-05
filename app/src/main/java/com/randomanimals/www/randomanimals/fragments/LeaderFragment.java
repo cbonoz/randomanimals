@@ -75,7 +75,7 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayList<String> spinnerArray = new ArrayList<>();
         for (SoundFile soundFile : context.getSoundFiles()) {
-            spinnerArray.add(soundFile.getAnimal());
+            spinnerArray.add(soundFile.animal);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item, spinnerArray);
