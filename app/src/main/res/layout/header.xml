@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <ImageButton
@@ -11,11 +12,24 @@
         android:src="@drawable/wallpaper_animal_header"
         android:adjustViewBounds="true"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/headerImageButton"
+        android:background="@color/accent"
+        android:textColor="@color/primary_dark"
+        android:text="RANDOM SOUND"
         android:layout_gravity="center"
-        android:src="@drawable/carnival_108"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <!--<ImageButton-->
+        <!--android:id="@+id/headerImageButton"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:src="@drawable/carnival_108"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
 
 </FrameLayout>

@@ -73,7 +73,7 @@ public class RandomDialog extends DialogFragment {
         final MainActivity activity = (MainActivity) getActivity();
         soundFiles = activity.getSoundFiles();
 
-        final int numItems = Math.min(100, soundFiles.size());
+        final int numItems = Math.min(24, soundFiles.size());
         final int randomIcon = ANIMAL_IMAGES.get(getRandomIndex(ANIMAL_IMAGES));
 
         for (int i = 0; i < numItems; i++) {
@@ -132,8 +132,10 @@ public class RandomDialog extends DialogFragment {
 
     private void launchSoundFragmentForSound(int position) {
         SoundFile soundFile = soundFiles.get(position);
-        Toast.makeText(getActivity(), soundFile.animal, Toast.LENGTH_LONG).show();
-        ((MainActivity) getActivity()).launchSoundFragment(soundFile, position, position);
+        final int bonus = position + 1;
+        final String message = String.format("%s: %d!", soundFile.animal, bonus);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        ((MainActivity) getActivity()).launchSoundFragment(soundFile, position, bonus);
     }
 
 
