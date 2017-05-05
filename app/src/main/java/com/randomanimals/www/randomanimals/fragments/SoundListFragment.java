@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.poliveira.parallaxrecyclerview.HeaderLayoutManagerFixed;
@@ -34,7 +34,7 @@ public class SoundListFragment extends Fragment {
 
     @BindView(R.id.recycler) RecyclerView mRecyclerView;
 
-    private ImageButton headerButton;
+    private Button headerButton;
 
     public SoundListFragment() {
         // Required empty public constructor
@@ -105,7 +105,7 @@ public class SoundListFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManagerFixed);
         View header = getActivity().getLayoutInflater().inflate(R.layout.header, recyclerView, false);
 
-        headerButton = (ImageButton) header.findViewById(R.id.headerImageButton);
+        headerButton = (Button) header.findViewById(R.id.headerImageButton);
         headerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
