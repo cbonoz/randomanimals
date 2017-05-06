@@ -1,21 +1,25 @@
 package com.randomanimals.www.randomanimals.services;
 
-/**
- * Created by cbuonocore on 3/19/17.
- */
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class HelperUtil {
 
     private HelperUtil() {
     }
 
+    private static final NumberFormat numberFormat
+            = NumberFormat.getNumberInstance(Locale.getDefault());
+
     public static String getCountStringFromCount(int count) {
         final String countString;
+        String numberAsString = numberFormat.format(count);
         if (count > 1) {
-            countString = count + " points";
+            countString = numberAsString + " points";
         } else {
-            countString = count + " point";
+            countString = numberAsString + " point";
         }
         return countString;
     }
+
 }

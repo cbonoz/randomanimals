@@ -205,12 +205,11 @@ public class MainActivity extends AppCompatActivity
     public boolean launchSoundFragment(SoundFile soundFile,
                                        final int listPosition,
                                        final int bonus) {
-        final Class fragmentClass = PlaySoundFragment.class;
-        String animal = soundFile.animal;
-        String fileName = soundFile.fileName;
-        Fragment fragment;
+        final String animal = soundFile.animal;
+        final String fileName = soundFile.fileName;
+        final Fragment fragment;
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            fragment = PlaySoundFragment.class.newInstance();
             setTitle(animal);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
@@ -222,6 +221,23 @@ public class MainActivity extends AppCompatActivity
         args.putString("animal", animal);
         args.putInt("listPosition", listPosition);
         args.putInt("bonus", bonus);
+        fragment.setArguments(args);
+        return launchFragment(fragment, Constants.ENTER_RIGHT);
+    }
+
+    public boolean launchLeaderFragment(final int listPosition) {
+        final Fragment fragment;
+        try {
+            fragment = LeaderFragment.class.newInstance();
+            setTitle("Animal Sounds Leaderboards");
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+            return false;
+        }
+
+        Bundle args = new Bundle();
+        args.putInt("listPosition", listPosition);
         fragment.setArguments(args);
         return launchFragment(fragment, Constants.ENTER_RIGHT);
     }

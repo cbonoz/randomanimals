@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.randomanimals.www.randomanimals.MainActivity;
@@ -57,7 +58,8 @@ public class RandomDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // experiment with style and theme.
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
+//        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Light_NoTitleBar);
     }
 
     private List<SoundFile> soundFiles;
@@ -68,6 +70,14 @@ public class RandomDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.random_dialog, container, false);
 
         luckyWheelView = (LuckyWheelView) view.findViewById(luckyWheel);
+
+        ImageButton dialogHeader = (ImageButton) view.findViewById(R.id.dialogHeader);
+        dialogHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         /////////////////////
         final MainActivity activity = (MainActivity) getActivity();

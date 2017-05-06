@@ -1,6 +1,7 @@
 package com.randomanimals.www.randomanimals.fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -49,6 +51,8 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private List<String> spinnerArray;
+
     private Spinner animalSpinner;
 
     TextView leaderBoardText;
@@ -63,7 +67,7 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
             leaderJson.put("animal", currentAnimal);
             leaderIntent.putExtra("url", Constants.ANIMAL_URL);
             leaderIntent.putExtra("body", leaderJson.toString());
-            ((MainActivity) getActivity()).startService(leaderIntent);
+            getActivity().startService(leaderIntent);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
@@ -73,32 +77,27 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         final MainActivity context = (MainActivity) getActivity();
         animalSpinner = (Spinner) view.findViewById(R.id.animalSpinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayList<String> spinnerArray = new ArrayList<>();
+        spinnerArray = new ArrayList<>();
         for (SoundFile soundFile : context.getSoundFiles()) {
             spinnerArray.add(soundFile.animal);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item, spinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner. q
+        // Apply the adapter to the spinner.
         animalSpinner.setAdapter(adapter);
         animalSpinner.setOnItemSelectedListener(this);
-        // Attempt to select the leaderboard for the first animal
 
-        SharedPreferences sharedPref = context.getPreferences(MODE_PRIVATE);
-        int position = sharedPref.getInt(Constants.SPINNER_KEY,-1);
-        if(position < 0 || position >= spinnerArray.size()) {
-            position = 0;
-        }
+        // setSelection will load the leaderboard for the animal at the given list position.
+        int position = getListPositionWithBoundsCheck();
         animalSpinner.setSelection(position);
-//        getLeaderBoardForCurrentAnimal(adapter.getItem(position));
     }
 
-    private void setUpLeaderBoardList(View view) {
+    private void setUpLeaderBoardUI(View view) {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.leader_recycler_view);
 
-        // use this setting to improve performance if you know that changes
+        // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
@@ -115,12 +114,16 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
 
         spinKitView = (SpinKitView) view.findViewById(R.id.spinKit);
         leaderBoardText = (TextView) view.findViewById(R.id.leaderBoardText);
-//        leaderBoardText.setText(R.string.loading);
 
+        final Bundle bundle = getArguments();
+        final Integer listPosition = bundle.getInt("listPosition", -1);
 
+        if (listPosition > 0) {
+            saveListPosition(listPosition);
+        }
 
         try {
-            setUpLeaderBoardList(view);
+            setUpLeaderBoardUI(view);
             setUpAnimalSpinnerSelector(view);
         } catch( Exception e) {
             Log.e(TAG, e.toString());
@@ -141,9 +144,9 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         EventBus.getDefault().unregister(this);
     }
 
+    // Clear the loading spinner and populate the view with the result list.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLeaderEvent(LeaderEvent event) {
-        // Clear the loading spinner and populate the view with the result list.
         spinKitView.setVisibility(View.GONE);
         if (event.animals == null) {
             Toast.makeText(getActivity(), R.string.internet_error, Toast.LENGTH_LONG).show();
@@ -156,9 +159,8 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         Log.d(TAG, "Received LeaderEvent: " + numLeaders + " animal entries");
         if (numLeaders > 0) {
             leaderBoardText.setVisibility(View.INVISIBLE);
+
             // Populate the leaderBoardAdapter
-//            leaderBoardText.setText(event.toString());
-            // specify an adapter (see also next example)
             mAdapter = new UserPlaysAdapter(event.animals);
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -168,17 +170,13 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         }
     }
 
+    // An item was selected. Load the leaderboard for the animal and save the position in the list.
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
         Log.d(TAG, "onItemSelected");
         try {
-            MainActivity context = (MainActivity)  getActivity();
-            SharedPreferences sharedPref = context.getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
-            prefEditor.putInt(Constants.SPINNER_KEY, pos);
-            prefEditor.apply();
-            String currentAnimal = (String) parent.getItemAtPosition(pos);
+            saveListPosition(pos);
+            final String currentAnimal = (String) parent.getItemAtPosition(pos);
             Log.d(TAG, "Selected: " + currentAnimal);
             getLeaderBoardForCurrentAnimal(currentAnimal);
         } catch (Exception e) {
@@ -189,6 +187,23 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
         Log.d(TAG, "onNothingSelected");
+    }
+
+    private void saveListPosition(int position) {
+        Activity context = getActivity();
+        SharedPreferences sharedPref = context.getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putInt(Constants.SPINNER_KEY, position);
+        prefEditor.apply();
+    }
+
+    private int getListPositionWithBoundsCheck() {
+        SharedPreferences sharedPref = getActivity().getPreferences(MODE_PRIVATE);
+        int position = sharedPref.getInt(Constants.SPINNER_KEY, -1);
+        if(position < 0 || position >= spinnerArray.size()) {
+            position = 0;
+        }
+        return position;
     }
 }
 //

@@ -3,7 +3,6 @@ package com.randomanimals.www.randomanimals.fragments;
 
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -48,12 +47,12 @@ public class PlaySoundFragment extends Fragment implements
         SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "PlaySoundFragment";
 
-    private AssetManager aMan;
     private static MediaPlayer player = null;
-    ImageButton playPauseButton;
+    private ImageButton playPauseButton;
     private TextView songCurrentDurationLabel;
     private TextView songTotalDurationLabel;
 
+    Button leaderButton;
     Button backButton;
     SeekBar seekBar;
     Handler handler;
@@ -68,111 +67,6 @@ public class PlaySoundFragment extends Fragment implements
 
     public PlaySoundFragment() {
         // Required empty public constructor
-    }
-
-
-
-    private String androidId;
-
-    private void incrementPlayCount() {
-        Intent incIntent = new Intent(getActivity(), WebService.class);
-        try {
-            MainActivity context = (MainActivity) getActivity();
-
-            JSONObject incJson = new JSONObject();
-            incJson.put("userId", androidId);
-            incJson.put("animal", animal);
-            incJson.put("username", context.username);
-            incJson.put("bonus", bonus);
-
-            incIntent.putExtra("url", Constants.INCREMENT_URL);
-            incIntent.putExtra("body", incJson.toString());
-
-            context.startService(incIntent);
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
-    }
-
-    private SuperActivityToast.OnButtonClickListener onButtonClickListener = new SuperActivityToast.OnButtonClickListener() {
-        @Override
-        public void onClick(View view, Parcelable token) {
-            try {
-                handler.removeCallbacks(mUpdateTimeTask);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-            MainActivity context = (MainActivity) getActivity();
-            try {
-                context.launchFragment(ProfileFragment.class.newInstance(), Constants.ENTER_LEFT);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-                if (context != null) {
-                    Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    };
-
-    private void makeSuperToastOnIncrement(String text) {
-        SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
-                .setButtonText("Profile")
-                .setButtonIconResource(R.drawable.ic_menu_manage)
-                .setOnButtonClickListener("your_profile", null, onButtonClickListener)
-                .setProgressBarColor(Color.WHITE)
-                .setText(text)
-                .setDuration(Style.DURATION_SHORT)
-                .setFrame(Style.FRAME_LOLLIPOP)
-                .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_PURPLE))
-                .setAnimations(Style.ANIMATIONS_POP).show();
-    }
-
-    private int totalDuration = 0;
-
-    private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            mp.start();
-            // Set the duration of the file.
-            totalDuration = mp.getDuration();
-            // set Progress bar values
-            seekBar.setProgress(0);
-            seekBar.setMax(100);
-            updateProgressBar();
-        }
-    };
-
-    private final android.media.MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            Log.d(TAG, "onCompletion");
-            incrementPlayCount(); // Increment count for animal.
-
-            // Changing button image to play button
-            playPauseButton.setImageResource(R.drawable.audio_play);
-        }
-    };
-
-    private void playSoundFile() {
-        String mp3File = new File(Constants.SOUND_FOLDER, fileName).toString();
-        Log.d(TAG, "Playing " + animal + ": " + mp3File);
-        if (player != null) {
-            stopAndReleasePlayer();
-        }
-        player = new MediaPlayer();
-        try {
-            AssetFileDescriptor afd = aMan.openFd(mp3File);
-            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            player.setOnCompletionListener(onCompletionListener);
-            player.setOnPreparedListener(onPreparedListener);
-            player.prepareAsync();
-        } catch (Exception e) {
-            Log.e("playSoundFile", e.toString());
-            Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
-        }
-
-        // Changing Button Image to pause image
-        playPauseButton.setImageResource(R.drawable.audio_pause);
     }
 
     //    http://stackoverflow.com/questions/16141167/android-audio-seekbar
@@ -242,7 +136,14 @@ public class PlaySoundFragment extends Fragment implements
             }
         });
 
-        aMan = getActivity().getAssets();
+        leaderButton = (Button) view.findViewById(R.id.leaderButton);
+        leaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).launchLeaderFragment(listPosition);
+            }
+        });
+
         handler = new Handler();
         playSoundFile();
         return view;
@@ -375,5 +276,110 @@ public class PlaySoundFragment extends Fragment implements
                 String.format(Locale.US, "+%d %s", bonus, animal);
         makeSuperToastOnIncrement(incMessage);
     }
+
+
+    private String androidId;
+
+    private void incrementPlayCount() {
+        Intent incIntent = new Intent(getActivity(), WebService.class);
+        try {
+            MainActivity context = (MainActivity) getActivity();
+
+            JSONObject incJson = new JSONObject();
+            incJson.put("userId", androidId);
+            incJson.put("animal", animal);
+            incJson.put("username", context.username);
+            incJson.put("bonus", bonus);
+
+            incIntent.putExtra("url", Constants.INCREMENT_URL);
+            incIntent.putExtra("body", incJson.toString());
+
+            context.startService(incIntent);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    private SuperActivityToast.OnButtonClickListener onButtonClickListener = new SuperActivityToast.OnButtonClickListener() {
+        @Override
+        public void onClick(View view, Parcelable token) {
+            try {
+                handler.removeCallbacks(mUpdateTimeTask);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+            MainActivity context = (MainActivity) getActivity();
+            try {
+                context.launchFragment(ProfileFragment.class.newInstance(), Constants.ENTER_LEFT);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                if (context != null) {
+                    Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
+    private void makeSuperToastOnIncrement(String text) {
+        SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
+                .setButtonText("Profile")
+                .setButtonIconResource(R.drawable.ic_menu_manage)
+                .setOnButtonClickListener("your_profile", null, onButtonClickListener)
+                .setProgressBarColor(Color.WHITE)
+                .setText(text)
+                .setDuration(Style.DURATION_SHORT)
+                .setFrame(Style.FRAME_LOLLIPOP)
+                .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_PURPLE))
+                .setAnimations(Style.ANIMATIONS_POP).show();
+    }
+
+    private int totalDuration = 0;
+
+    private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            mp.start();
+            // Set the duration of the file.
+            totalDuration = mp.getDuration();
+            // set Progress bar values
+            seekBar.setProgress(0);
+            seekBar.setMax(100);
+            updateProgressBar();
+        }
+    };
+
+    private final android.media.MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            Log.d(TAG, "onCompletion");
+            incrementPlayCount(); // Increment count for animal.
+
+            // Changing button image to play button
+            playPauseButton.setImageResource(R.drawable.audio_play);
+        }
+    };
+
+    private void playSoundFile() {
+        String mp3File = new File(Constants.SOUND_FOLDER, fileName).toString();
+        Log.d(TAG, "Playing " + animal + ": " + mp3File);
+        if (player != null) {
+            stopAndReleasePlayer();
+        }
+        player = new MediaPlayer();
+        try {
+            AssetFileDescriptor afd = getActivity().getAssets().openFd(mp3File);
+            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            player.setOnCompletionListener(onCompletionListener);
+            player.setOnPreparedListener(onPreparedListener);
+            player.prepareAsync();
+        } catch (Exception e) {
+            Log.e("playSoundFile", e.toString());
+            Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        // Changing Button Image to pause image
+        playPauseButton.setImageResource(R.drawable.audio_pause);
+    }
+
 
 }
