@@ -283,7 +283,6 @@ public class PlaySoundFragment extends Fragment implements
         bonusView.setText("+" + bonus);
     }
 
-
     private String androidId;
 
     private void incrementPlayCount() {
