@@ -34,7 +34,7 @@ public class ShareFragment extends Fragment {
     }
 
     @OnClick(R.id.twitterButton) void onTwitterClick() {
-        final String shareString = getString(R.string.twitter_line);
+        final String shareString = getString(R.string.share_message);
         shareTwitter(shareString);
     }
 

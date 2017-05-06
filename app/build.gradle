@@ -16,8 +16,8 @@ android {
         applicationId "com.randomanimals.www.randomanimals"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.0-b"
+        versionCode 4
+        versionName "1.1-b"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
