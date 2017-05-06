@@ -50,7 +50,6 @@ public class NumberUtil {
         return rand.nextInt(10) + 5;
     }
 
-
     public static Integer getNextBonus() {
         return bonusCollection.next();
     }

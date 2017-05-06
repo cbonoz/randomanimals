@@ -100,11 +100,6 @@ public class RandomDialog extends DialogFragment {
         luckyWheelView.bringToFront();
         luckyWheelView.setRound(getRandomNumberOfRotations());
 
-        /*luckyWheelView.setLuckyWheelBackgrouldColor(0xff0000ff);
-        luckyWheelView.setLuckyWheelTextColor(0xffcc0000);
-        luckyWheelView.setLuckyWheelCenterImage(getResources().getDrawable(R.drawable.icon));
-        luckyWheelView.setLuckyWheelCursorImage(R.drawable.ic_cursor);*/
-
         playButton = (Button) view.findViewById(R.id.play);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,10 +112,12 @@ public class RandomDialog extends DialogFragment {
         luckyWheelView.setLuckyRoundItemSelectedListener(new LuckyWheelView.LuckyRoundItemSelectedListener() {
             @Override
             public void LuckyRoundItemSelected(int index) {
-                final int bonus = data.get(index).bonus;
+                final LuckyItem item = data.get(index);
+                final int bonus = item.bonus;
+                final int listPosition = item.soundListPosition;
                 // Dismiss the dialog and launch the sound Fragment with the bonus
                 dismiss();
-                launchSoundFragmentForSound(index, bonus);
+                launchSoundFragmentAfterSpin(listPosition, bonus);
             }
         });
 
@@ -150,14 +147,16 @@ public class RandomDialog extends DialogFragment {
             luckyItem.bonus = bonus;
             data.add(luckyItem);
         }
-
     }
 
-    private void launchSoundFragmentForSound(final int position, final int bonus) {
+    private void launchSoundFragmentAfterSpin(final int position, final int bonus) {
         SoundFile soundFile = soundFiles.get(position);
-        final String message = String.format(Locale.getDefault(), "%s: %d!", soundFile.animal, bonus);
+        final String message = String.format(Locale.US, "%s: %d!", soundFile.animal, bonus);
         final MainActivity activity = (MainActivity) getActivity();
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
-        activity.launchSoundFragment(soundFile, position, bonus);
+        // if activity context is null here, then the spin was cancelled.
+        if (activity != null) {
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+            activity.launchPlaySoundFragment(soundFile, position, bonus);
+        }
     }
 }

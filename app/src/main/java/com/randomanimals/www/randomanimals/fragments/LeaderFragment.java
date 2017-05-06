@@ -116,10 +116,13 @@ public class LeaderFragment extends Fragment implements AdapterView.OnItemSelect
         leaderBoardText = (TextView) view.findViewById(R.id.leaderBoardText);
 
         final Bundle bundle = getArguments();
-        final Integer listPosition = bundle.getInt("listPosition", -1);
 
-        if (listPosition > 0) {
-            saveListPosition(listPosition);
+        // If listPosition passed in, save it.
+        if (bundle != null) {
+            final int listPosition = bundle.getInt("listPosition", -1);
+            if (listPosition > 0) {
+                saveListPosition(listPosition);
+            }
         }
 
         try {

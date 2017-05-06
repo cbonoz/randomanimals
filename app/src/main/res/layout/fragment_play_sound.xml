@@ -58,6 +58,7 @@
             android:id="@+id/bonusView"
             android:layout_gravity="center"
             android:textAlignment="center"
+            android:textColor="@color/colorAccent"
             android:text="+1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
