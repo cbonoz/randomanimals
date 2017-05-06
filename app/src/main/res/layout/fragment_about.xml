@@ -27,11 +27,12 @@
 
     </LinearLayout>
 
+    <!--android:background="@color/accent"-->
     <Button
         android:id="@+id/backButton"
         android:padding="10dp"
-        android:layout_margin="10dp"
         android:text="Back to Sounds"
+        android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
