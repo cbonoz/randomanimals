@@ -7,10 +7,6 @@ import com.randomanimals.www.randomanimals.services.HelperUtil;
 
 import java.util.List;
 
-/**
- * Created by cbuonocore on 3/18/17.
- */
-
 public class UserPlaysAdapter extends PlaysAdapter {
 
     public UserPlaysAdapter(List<Animal> animals) {

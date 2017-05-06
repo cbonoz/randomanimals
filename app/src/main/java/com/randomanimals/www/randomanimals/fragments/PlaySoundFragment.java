@@ -56,6 +56,7 @@ public class PlaySoundFragment extends Fragment implements
     Button backButton;
     SeekBar seekBar;
     Handler handler;
+    TextView bonusView;
     TextView titleText;
 
     private String animal;
@@ -91,6 +92,9 @@ public class PlaySoundFragment extends Fragment implements
 
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
+
+        bonusView = (TextView) view.findViewById(R.id.bonusView);
+        bonusView.setText("+" + bonus);
 
         songCurrentDurationLabel = (TextView) view.findViewById(R.id.songCurrentDurationLabel);
         songTotalDurationLabel = (TextView) view.findViewById(R.id.songTotalDurationLabel);

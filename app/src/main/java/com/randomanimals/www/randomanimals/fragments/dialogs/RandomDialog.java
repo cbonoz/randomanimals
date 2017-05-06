@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class RandomDialog extends DialogFragment {
     List<LuckyItem> data = new ArrayList<>();
 
     private LuckyWheelView luckyWheelView;
+    private Button playButton;
 
     public static RandomDialog newInstance(int num) {
         RandomDialog f = new RandomDialog();
@@ -110,8 +112,8 @@ public class RandomDialog extends DialogFragment {
         luckyWheelView.setLuckyWheelCenterImage(getResources().getDrawable(R.drawable.icon));
         luckyWheelView.setLuckyWheelCursorImage(R.drawable.ic_cursor);*/
 
-
-        view.findViewById(R.id.play).setOnClickListener(new View.OnClickListener() {
+        playButton = (Button) view.findViewById(R.id.play);
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int index = getRandomIndex(data);
