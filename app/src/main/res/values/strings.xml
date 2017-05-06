@@ -22,7 +22,7 @@
     <string name="share_twitter">Clicking the bird will open a Twitter post dialog</string>
     <string name="share_text">Button will preload an example message for you to edit before sending.</string>
 
-    <string name="twitter_line">Find Random Animals on Google Play - listen to sounds and get on the leaderboard</string>
+    <string name="share_message">Find Random Animals on Google Play - listen to sounds and get on the leaderboard.</string>
 
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>

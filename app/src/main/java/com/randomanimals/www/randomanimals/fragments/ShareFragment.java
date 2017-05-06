@@ -34,9 +34,6 @@ public class ShareFragment extends Fragment {
         startActivity(tweet);
     }
 
-    ImageButton twitterButton;
-    ImageButton shareButton;
-
     @OnClick(R.id.twitterButton) void onTwitterClick() {
         final String shareString = getString(R.string.twitter_line);
         shareTwitter(shareString);
@@ -46,9 +43,10 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "onClick");
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setData(Uri.parse("sms:"));
-        final String animalUri = "PLAY_STORE_URL";
-        sendIntent.putExtra("sms_body", "Free animal sounds app on android, pretty funny. " +
-                animalUri);
+        // TODO: replace with actual url.
+        final String animalUri = ".";
+        sendIntent.putExtra("sms_body", getString(R.string.share_message);
+//                "Random Animals sounds app on android, pretty funny. " + "Check it out" + animalUri);
         startActivity(sendIntent);
         Toast.makeText(getActivity(), "select text application", Toast.LENGTH_SHORT).show();
     }
