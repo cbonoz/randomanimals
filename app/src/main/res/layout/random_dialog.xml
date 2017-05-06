@@ -59,8 +59,16 @@
             app:lkwCenterImage="@drawable/wheel"
             app:lkwCursor="@drawable/ic_cursor"
             android:id="@+id/luckyWheel"
+            android:paddingTop="20dp"
             android:layout_gravity="center"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textAlignment="center"
+            android:text="Bonus Points on Spin"
+            android:layout_gravity="bottom|center"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </FrameLayout>

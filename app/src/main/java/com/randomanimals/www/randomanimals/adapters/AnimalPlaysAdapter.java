@@ -3,7 +3,7 @@ package com.randomanimals.www.randomanimals.adapters;
 import android.graphics.Typeface;
 
 import com.randomanimals.www.randomanimals.models.Animal;
-import com.randomanimals.www.randomanimals.services.HelperUtil;
+import com.randomanimals.www.randomanimals.services.NumberUtil;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class AnimalPlaysAdapter extends PlaysAdapter {
         holder.playView.setText(mDataset.get(position).animal + ": ");
         holder.playView.setTypeface(null, Typeface.BOLD);
         final int count = mDataset.get(position).count;
-        final String countString = HelperUtil.getCountStringFromCount(count);
+        final String countString = NumberUtil.getCountStringFromCount(count);
         holder.countView.setText(countString);
 
     }

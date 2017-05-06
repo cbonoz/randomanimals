@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="0dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -17,6 +17,8 @@
         android:background="@color/accent"
         android:textColor="@color/primary_dark"
         android:text="RANDOM SOUND"
+        android:drawableStart="@drawable/zzz_star_circle"
+        android:drawablePadding="5dp"
         android:layout_gravity="center"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"

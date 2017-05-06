@@ -12,19 +12,24 @@ import android.widget.Toast;
 import com.randomanimals.www.randomanimals.MainActivity;
 import com.randomanimals.www.randomanimals.R;
 import com.randomanimals.www.randomanimals.models.SoundFile;
+import com.randomanimals.www.randomanimals.services.NumberUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import rubikstudio.library.LuckyWheelView;
 import rubikstudio.library.model.LuckyItem;
 
 import static com.randomanimals.www.randomanimals.R.id.luckyWheel;
+import static com.randomanimals.www.randomanimals.services.NumberUtil.getNextBonus;
+import static com.randomanimals.www.randomanimals.services.NumberUtil.getRandomIndex;
+import static com.randomanimals.www.randomanimals.services.NumberUtil.getRandomNumberOfRotations;
 
 public class RandomDialog extends DialogFragment {
     private static final String TAG = "RandomDialog";
+
+    private static final int MAX_ITEMS = 24;
 
     private static final List<Integer> ANIMAL_IMAGES = Arrays.asList(
             R.drawable.test1,
@@ -40,9 +45,10 @@ public class RandomDialog extends DialogFragment {
             R.drawable.test10
     );
 
-    List<LuckyItem> data = new ArrayList<>();
-
+    private List<LuckyItem> data;
     private LuckyWheelView luckyWheelView;
+
+    // UI elements.
     private Button playButton;
 
     public static RandomDialog newInstance(int num) {
@@ -66,6 +72,7 @@ public class RandomDialog extends DialogFragment {
 
     private List<SoundFile> soundFiles;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,23 +92,8 @@ public class RandomDialog extends DialogFragment {
         final MainActivity activity = (MainActivity) getActivity();
         soundFiles = activity.getSoundFiles();
 
-        final int numItems = Math.min(24, soundFiles.size());
-        final int randomIcon = ANIMAL_IMAGES.get(getRandomIndex(ANIMAL_IMAGES));
-
-        for (int i = 0; i < numItems; i++) {
-            LuckyItem luckyItem = new LuckyItem();
-            SoundFile soundFile = soundFiles.get(i);
-            if (i % 2 == 0) {
-                luckyItem.color = 0xffFFE0B2;
-            } else if (i % 3 == 0) {
-                luckyItem.color = 0xffFFCC80;
-            } else {
-                luckyItem.color = 0xffFFF3E0;
-            }
-            luckyItem.text = Integer.toString(soundFile.listPosition+1);
-            luckyItem.icon = randomIcon;
-            data.add(luckyItem);
-        }
+        data = new ArrayList<>();
+        loadWheelData();
 
         luckyWheelView.setData(data);
         luckyWheelView.bringToFront();
@@ -116,7 +108,7 @@ public class RandomDialog extends DialogFragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int index = getRandomIndex(data);
+                int index = getRandomIndex(data.size());
                 luckyWheelView.startLuckyWheelWithTargetIndex(index);
             }
         });
@@ -124,46 +116,48 @@ public class RandomDialog extends DialogFragment {
         luckyWheelView.setLuckyRoundItemSelectedListener(new LuckyWheelView.LuckyRoundItemSelectedListener() {
             @Override
             public void LuckyRoundItemSelected(int index) {
+                final int bonus = data.get(index).bonus;
+                // Dismiss the dialog and launch the sound Fragment with the bonus
                 dismiss();
-                launchSoundFragmentForSound(index);
+                launchSoundFragmentForSound(index, bonus);
             }
         });
 
         return view;
     }
 
-    private <T> int getRandomIndex(List<T> arr) {
-        Random rand = new Random();
-        return rand.nextInt(arr.size() - 1);
+    private void loadWheelData() {
+        final int numItems = Math.min(MAX_ITEMS, soundFiles.size());
+        final int remaining = soundFiles.size() - numItems;
+        final int startIndex = NumberUtil.getRandomIndex(remaining);
+
+        final int randomIcon = ANIMAL_IMAGES.get(getRandomIndex(ANIMAL_IMAGES.size()));
+
+        for (int i = startIndex; i < startIndex + numItems; i++) {
+            LuckyItem luckyItem = new LuckyItem();
+            if (i % 2 == 0) {
+                luckyItem.color = 0xffFFE0B2;
+            } else if (i % 3 == 0) {
+                luckyItem.color = 0xffFFCC80;
+            } else {
+                luckyItem.color = 0xffFFF3E0;
+            }
+            luckyItem.soundListPosition = i;
+            final int bonus = getNextBonus();
+            luckyItem.text = bonus + "";
+            luckyItem.icon = randomIcon;
+            luckyItem.bonus = bonus;
+            data.add(luckyItem);
+        }
+
     }
 
-    private int getRandomNumberOfRotations() {
-        Random rand = new Random();
-        return rand.nextInt(10) + 5;
-    }
-
-    private void launchSoundFragmentForSound(int position) {
+    private void launchSoundFragmentForSound(final int position, final int bonus) {
         SoundFile soundFile = soundFiles.get(position);
-        final int bonus = position + 1;
         final String message = String.format("%s: %d!", soundFile.animal, bonus);
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-        ((MainActivity) getActivity()).launchSoundFragment(soundFile, position, bonus);
-    }
-
-
-//        ButterKnife.bind(this, view);
-//        soundFiles = ((MainActivity) getActivity()).getSoundFiles();
-//        final int numItems = Math.min(soundFiles.size(), 10);
-//        createLuckyWheelItems(numItems);
-//        return view;
-//    }
-//
-
-    public void createLuckyWheelItems(int n) {
-
-
-        List<LuckyItem> data = new ArrayList<>();
-
+        final MainActivity activity = (MainActivity) getActivity();
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+        activity.launchSoundFragment(soundFile, position, bonus);
     }
 
     private void createExampleWheelData() {
