@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.randomanimals.www.randomanimals.R;
@@ -43,10 +42,8 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "onClick");
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setData(Uri.parse("sms:"));
-        // TODO: replace with actual url.
-        final String animalUri = ".";
-        sendIntent.putExtra("sms_body", getString(R.string.share_message);
-//                "Random Animals sounds app on android, pretty funny. " + "Check it out" + animalUri);
+        // TODO: add play store url to share message.
+        sendIntent.putExtra("sms_body", getString(R.string.share_message));
         startActivity(sendIntent);
         Toast.makeText(getActivity(), "select text application", Toast.LENGTH_SHORT).show();
     }
