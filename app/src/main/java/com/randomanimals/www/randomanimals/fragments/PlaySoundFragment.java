@@ -275,10 +275,12 @@ public class PlaySoundFragment extends Fragment implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(SoundEvent event) {
-        final int bonus = event.bonus;
         final String incMessage =
-                String.format(Locale.US, "+%d %s", bonus, animal);
+                String.format(Locale.US, "+%d %s", event.bonus, animal);
         makeSuperToastOnIncrement(incMessage);
+        // Reset the bonus after the first listen.
+        bonus = 1;
+        bonusView.setText("+" + bonus);
     }
 
 
