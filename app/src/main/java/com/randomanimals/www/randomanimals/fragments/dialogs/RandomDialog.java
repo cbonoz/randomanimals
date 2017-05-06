@@ -51,6 +51,7 @@ public class RandomDialog extends DialogFragment {
 
     // UI elements.
     private Button playButton;
+    private ImageButton cancelButton;
 
     public static RandomDialog newInstance(int num) {
         RandomDialog f = new RandomDialog();
@@ -83,6 +84,14 @@ public class RandomDialog extends DialogFragment {
 
         ImageButton dialogHeader = (ImageButton) view.findViewById(R.id.dialogHeader);
         dialogHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        cancelButton = (ImageButton) view.findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();

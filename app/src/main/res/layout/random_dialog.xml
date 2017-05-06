@@ -6,14 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/dialogHeader"
-        android:src="@drawable/random_animals_108"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:scaleType="center"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name" />
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/dialogHeader"
+            android:src="@drawable/random_animals_108"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:scaleType="center"
+            android:background="#FFFFBB33"
+            android:contentDescription="@string/app_name" />
+
+        <ImageButton
+            android:id="@+id/cancelButton"
+            android:src="@drawable/zzz_close"
+            android:background="@android:color/transparent"
+            android:layout_gravity="top|end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </FrameLayout>
 
     <!--app:lkwCenterImage="@drawable/random_animals_108"-->
     <FrameLayout
