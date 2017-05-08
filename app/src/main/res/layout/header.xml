@@ -8,6 +8,7 @@
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@null"
         android:id="@+id/headerImageView"
         android:src="@drawable/wallpaper_animal_header"
         android:scaleType="fitXY"
