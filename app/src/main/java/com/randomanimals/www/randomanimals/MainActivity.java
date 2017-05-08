@@ -3,6 +3,7 @@ package com.randomanimals.www.randomanimals;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -104,7 +106,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5780102660170607~3225694773");
+        // Ensure that the volume control modifies the music stream for sounds.
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        MobileAds.initialize(getApplicationContext(), getString(R.string.ad_app_id));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.app_name);
@@ -137,14 +141,34 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Initialize ad banner at bottom of page.
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        final AdView mAdView = (AdView) findViewById(R.id.adView);
         final AdRequest adRequest = new AdRequest.Builder()
-                .setGender(AdRequest.GENDER_MALE)
-                .addKeyword("animal")
-                .setIsDesignedForFamilies(true)
+                .addTestDevice("24FC531E1163DBB1DF67674F1882463C")
+                .addKeyword("pets")
+                .addKeyword("cats")
+                .addKeyword("dogs")
                 .build();
-        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int i) {
+                Log.e("admob", "Failed to receive ad: " + i);
+                super.onAdFailedToLoad(i);
+            }
 
+            @Override
+            public void onAdOpened() {
+                Log.d("admob", "ad opened");
+                super.onAdOpened();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.d("admob", "ad loaded");
+                super.onAdLoaded();
+            }
+        });
+        mAdView.loadAd(adRequest);
+        mAdView.bringToFront();
     }
 
     @Override
@@ -314,6 +338,4 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.apply();
         Log.d(TAG, "Set " + key + ": " + value);
     }
-
-
 }
