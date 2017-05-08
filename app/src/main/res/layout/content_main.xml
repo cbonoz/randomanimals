@@ -27,7 +27,7 @@
             android:layout_gravity="bottom|center"
             ads:adSize="LARGE_BANNER"
             ads:adUnitId="@string/banner_ad_unit_id">
-        </com.google.android.gms.ads.AdView>A
+        </com.google.android.gms.ads.AdView>
 
     </FrameLayout>
 
