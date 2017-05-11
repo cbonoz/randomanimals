@@ -119,7 +119,8 @@ public class MainActivity extends AppCompatActivity
         androidId = Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
         username = getStringPref(Constants.USERNAME_KEY);
         if (!ValidatorUtil.validateUsername(username)) {
-            saveStringPref(Constants.USERNAME_KEY, generateUserName());
+            username = generateUserName();
+            saveStringPref(Constants.USERNAME_KEY, username);
         }
 
         initSoundFiles();
