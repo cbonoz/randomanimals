@@ -1,9 +1,11 @@
 package com.randomanimals.www.randomanimals;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -166,6 +168,7 @@ public class MainActivity extends AppCompatActivity
             public void onAdLoaded() {
                 Log.d("admob", "ad loaded");
                 super.onAdLoaded();
+                mAdView.bringToFront();
             }
         });
         mAdView.loadAd(adRequest);
@@ -303,6 +306,14 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = AboutFragment.class;
                 title = "Special Thanks";
                 break;
+            case R.id.nav_rate:
+                try {
+                    startRateIntent();
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                    Toast.makeText(this, "Visit google play to rate the app!", Toast.LENGTH_SHORT).show();
+                }
+                return false;
             default:
                 fragmentClass = SoundListFragment.class;
                 title = "Animal Sounds";
@@ -320,13 +331,6 @@ public class MainActivity extends AppCompatActivity
         return launchFragment(fragment, Constants.ENTER_LEFT);
     }
 
-//    if (!ValidatorUtil.validateUsername(value)) {
-//        value = generateUserName();
-//        SharedPreferences.Editor prefsEditor = prefs.edit();
-//        prefsEditor.putString(key, value);
-//        prefsEditor.apply();
-//    }
-
     public String getStringPref(String key) {
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
         return prefs.getString(key, "");
@@ -338,5 +342,21 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.putString(key, value);
         prefsEditor.apply();
         Log.d(TAG, "Set " + key + ": " + value);
+    }
+
+    public void startRateIntent() throws Exception {
+        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
+        }
     }
 }

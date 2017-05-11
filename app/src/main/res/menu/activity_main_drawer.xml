@@ -20,13 +20,13 @@
             android:title="Leaderboards" />
 
         <!--<item-->
-            <!--android:id="@+id/nav_quiz"-->
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            <!--android:title="Quiz" />-->
+        <!--android:id="@+id/nav_quiz"-->
+        <!--android:icon="@drawable/ic_menu_gallery"-->
+        <!--android:title="Quiz" />-->
         <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
+        <!--android:id="@+id/nav_slideshow"-->
+        <!--android:icon="@drawable/ic_menu_slideshow"-->
+        <!--android:title="Slideshow" />-->
 
     </group>
 
@@ -41,7 +41,12 @@
                 android:id="@+id/nav_about"
                 android:icon="@drawable/zzz_information"
                 android:title="Special Thanks" />
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/zzz_star"
+                android:title="Rate on Play Store" />
+
+
         </menu>
     </item>
-
 </menu>
