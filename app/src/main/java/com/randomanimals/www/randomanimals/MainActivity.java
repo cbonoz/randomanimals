@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Initialize ad banner at bottom of page.
+        // TODO: loosen category keywords if needed.
         final AdView mAdView = (AdView) findViewById(R.id.adView);
         final AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("24FC531E1163DBB1DF67674F1882463C")
